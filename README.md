@@ -31,7 +31,9 @@ pip install -e .
 
 ## Usage
 
-Please go to the docs page for detailed info on the design, usage, and contributing: TODO. Below are some short snippets that might help.
+Please go to the docs page for detailed info on the design, usage, and contributing: https://breakend.github.io/experiment-impact-tracker/ 
+
+Below are some short snippets that might help.
 
 ### Tracking
 You just need to add a few lines of code!
