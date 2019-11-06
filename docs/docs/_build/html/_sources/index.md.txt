@@ -1,0 +1,18 @@
+Welcome to climate-impact-tracker's documentation!
+==================================================
+
+## Installation
+
+## Usage Example
+
+## Design Decisions
+
+TODO:
+
+## Contributing new Regions
+
+TODO:
+
+## Contributing platform support and better usage metering
+
+TODO:

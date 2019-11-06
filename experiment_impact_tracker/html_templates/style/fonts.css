@@ -1,0 +1,47 @@
+@font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/Regular/avenirnextregular.eot');
+    src: url('fonts/AvenirNext/Regular/avenirnextregular.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/Regular/avenirnextregular.woff') format('woff'),url('fonts/AvenirNext/Regular/avenirnextregular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/Italic/avenirnextregularitalic.eot');
+    src: url('fonts/AvenirNext/Italic/avenirnextregularitalic.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/Italic/avenirnextregularitalic.woff') format('woff'),url('fonts/AvenirNext/Italic/avenirnextregularitalic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic
+  }
+  
+  @font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/Medium/avenirnextmedium.eot');
+    src: url('fonts/AvenirNext/Medium/avenirnextmedium.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/Medium/avenirnextmedium.woff') format('woff'),url('fonts/AvenirNext/Medium/avenirnextmedium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  @font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/DemiBold/avenirnextdemibold.eot');
+    src: url('fonts/AvenirNext/DemiBold/avenirnextdemibold.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/DemiBold/avenirnextdemibold.woff') format('woff'),url('fonts/AvenirNext/DemiBold/avenirnextdemibold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+  }
+  
+  @font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/DemiBoldItalic/avenirnextdemibolditalic.eot');
+    src: url('fonts/AvenirNext/DemiBoldItalic/avenirnextdemibolditalic.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/DemiBoldItalic/avenirnextdemibolditalic.woff') format('woff'),url('fonts/AvenirNext/DemiBoldItalic/avenirnextdemibolditalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+  }
+  
+  @font-face{
+    font-family: "Avenir";
+    src: url('fonts/AvenirNext/Bold/avenirnextbold.eot');
+    src: url('fonts/AvenirNext/Bold/avenirnextbold.eot?#iefix') format('embedded-opentype'),url('fonts/AvenirNext/Bold/avenirnextbold.woff') format('woff'),url('fonts/AvenirNext/Bold/avenirnextbold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }

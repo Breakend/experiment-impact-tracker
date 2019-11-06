@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!-- modified from url=(0044, classes="table table-striped")http://idl.cs.washington.edu/papers/tfgraph/ -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../{{relative_base_dir}}/style/fonts.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="../{{relative_base_dir}}/style/main.css">
+    <style type="text/css">
+        :root #content > #center > .dose > .dosesingle,
+        :root #content > #right > .dose > .dosesingle {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gutter">
+        <a href="../index.html" >Experiment Sets</a>
+        <div class="nav">
+            {% for exp_set_name, exp_set_title  in exp_set_names_titles -%}
+                <br>
+                <a href="../{{exp_set_name}}/index.html" class="at">{{exp_set_title}}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="main">
+        <div id="content">
+            <div class="title">
+                    <div class="heading"> {{title}}</div>
+            </div>
+            <br/>
+            <br/>
+            <div class="article">
+                <div class="pub">
+                    <div class="materials">
+                        <div class="heading">Experiment In Set</div>
+                        <div class="links">
+                            {% for exp_num in exps -%}
+                                <a href="./{{exp_num}}.html" class="link at">{{exp_num}}</a>
+                            {% endfor %}
+                          </div>
+                    </div>
+                <div>        
+                </div>
+                <div class="heading">Experiment Set Summary</div>
+                <div class="paper tables">
+                    <br> <div class="header"><span>Summary Stats</span></div></span>
+                    {{ summary.to_html( classes="table table-striped") | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

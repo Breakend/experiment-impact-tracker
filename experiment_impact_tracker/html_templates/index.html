@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!-- modified from url=(0044)http://idl.cs.washington.edu/papers/tfgraph/ -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{relative_base_dir}}/style/fonts.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{{relative_base_dir}}/style/main.css">
+    <style type="text/css">
+        :root #content > #center > .dose > .dosesingle,
+        :root #content > #right > .dose > .dosesingle {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gutter">
+            <a href="../index.html">Experiment Sets</a>
+            <div class="nav">
+                {% for exp_set_name, exp_set_title  in exp_set_names_titles -%}
+                    <br>
+                    <a href="./{{exp_set_name}}/index.html" class="at">{{exp_set_title}}</a>
+                {% endfor %}
+            </div>
+        </div>
+    <div id="main">
+        <div id="content">
+            <div class="title">
+                    <div class="heading"> {{title}}</div>
+            </div>
+            <br/>
+            <br/>
+            <div class="abstract">
+                <div class="heading">Description</div>
+                <div class="text">
+                    {{description}}
+                </div>
+            </div>
+            <div class="article">
+                <div class="pub">
+                    <div class="materials">
+                        <div class="heading">Executive Summary</div>
+                        <!-- <div class="links"> -->
+                                {{ executive_summary.to_html(classes="table table-striped") | safe }}
+                          <!-- </div> -->
+                    </div>
+                <div>        
+                </div>
+            </div>
+            {% if plot_paths %}
+            <div class="heading">Graphs</div>
+            <div class="paper tables">
+                {% for path in plot_paths -%}
+                <img style="width: 80%;" src="./{{path}}">
+                {% endfor %}
+            </div>   
+            {% endif %} 
+        </div>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!-- modified from url=(0044)http://idl.cs.washington.edu/papers/tfgraph/ -->
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="../{{relative_base_dir}}/style/fonts.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="../{{relative_base_dir}}/style/main.css">
+    <style type="text/css">
+        :root #content > #center > .dose > .dosesingle,
+        :root #content > #right > .dose > .dosesingle {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+<div class="gutter">
+        <a href="../index.html" >Experiment Sets</a>
+        <div class="nav">
+            {% for exp_set_name, exp_set_title  in exp_set_names_titles -%}
+                <br>
+                <a href="../{{exp_set_name}}/index.html" class="at">{{exp_set_title}}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div id="main">
+        <div id="content">
+            <div class="title">
+                    <div class="heading"> <a href="./index.html">{{title}}</a></div>
+            </div>
+            <br/>
+            <br/>
+            
+            <div class="heading">Experiment Information</div>
+
+            Jump to: <br/>
+            <a href="#cpu_info">[CPU Info]</a> | <a href="#gpu_info">[GPU Info]</a> | <a href="#package_info">[Python Package Info]</a> | <a href="#carbon_info">[Carbon Emission Region Info]</a> | <a href="#stats">[Average Statistics]</a> | <a href="#graphs">[Graphs]</a>
+            
+            <a href="{{data_download_path}}">[ Data Download ]</a>
+
+            <div class="paper tables">
+                <a name="cpu_info"></a> 
+                <br> <div class="header"><span>CPU Info</span></div></span>
+                {{ cpu_info.to_html(classes="table table-striped") | safe }}
+                <a name="gpu_info"></a> 
+                <div class="header"><span>GPU Info</span></div></span>
+                {{ gpu_info.to_html(classes="table table-striped") | safe }}
+                <a name="package_info"></a> 
+                <div class="header"><span>Package Info</span></div></span>
+                {{ package.to_html(classes="table table-striped") | safe }}
+                <a name="carbon_info"></a> 
+                <br> <div class="header"><span>Carbon Info</span></div></span>
+                {{ carbon_info.to_html(classes="table table-striped") | safe }}
+                <a name="stats"></a> 
+                <br> <div class="header"><span>Stats</span></div></span>
+                {{ stats.to_html(classes="table table-striped") | safe }}
+            </div>
+            <a name="graphs"></a> 
+            <div class="heading">Graphs</div>
+            <div class="paper tables">
+                {% for path in graph_paths -%}
+                <img style="width: 80%;" src="./{{path}}">
+                {% endfor %}
+            </div>     
+        </div>
+    </div>
+
+    
+</body>
+
+</html>
