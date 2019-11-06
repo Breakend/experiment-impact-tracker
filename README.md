@@ -6,6 +6,19 @@ Right now, we're only compatible with Linux systems running NVIDIA GPU's and Int
 
 If you'd like support for your use-case or encounter missing/broken functionality on your system specs, please open an issue or better yet submit a pull request! It's almost impossible to cover every combination on our own!
 
+### Test Successfully
+
+GPUs:
++ NVIDIA Titan X
++ NVIDIA Titan V
+
+CPUs:
++ Intel(R) Xeon(R) CPU E5-2640 v3 @ 2.60GHz
++ Intel(R) Xeon(R) CPU E5-2620 v3 @ 2.40GHz
+
+OS:
++ Ubuntu 16.04.5 LTS
+
 ## Installation
 
 To install:
