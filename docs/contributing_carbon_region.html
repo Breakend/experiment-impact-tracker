@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>How to Contribute A New Carbon Region &#8212; experiment-impact-tracker 1.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="How to Contribute A New Metric" href="contributing_new_metric.html" />
+    <link rel="prev" title="experiment-impact-tracker docs" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing_new_metric.html" title="How to Contribute A New Metric"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="experiment-impact-tracker docs"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">experiment-impact-tracker 1.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-contribute-a-new-carbon-region">
+<h1>How to Contribute A New Carbon Region<a class="headerlink" href="#how-to-contribute-a-new-carbon-region" title="Permalink to this headline">¶</a></h1>
+<p>Let’s say we have a new region called Narnia that we wish to add carbon intensities for. Let’s first create a geojson which encloses Narnia on a map:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;Feature&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;properties&quot;</span><span class="o">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;zoneName&quot;</span><span class="o">:</span> <span class="s2">&quot;ABC&quot;</span><span class="p">},</span>
+                    <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;ABC&quot;</span>
+                    <span class="p">},</span>
+    <span class="s2">&quot;geometry&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="o">:</span> <span class="s2">&quot;MultiPolygon&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;coordinates&quot;</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="mf">17.138671875</span><span class="p">,</span>
+            <span class="mf">67.2720426739952</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="mf">27.7294921875</span><span class="p">,</span>
+            <span class="mf">66.31986144668052</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="mf">22.060546874999996</span><span class="p">,</span>
+            <span class="mf">61.91827102335593</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="mf">10.37109375</span><span class="p">,</span>
+            <span class="mf">65.5129625532949</span>
+        <span class="p">],</span>
+        <span class="p">[</span>
+            <span class="o">-</span><span class="mf">17.0068359375</span><span class="p">,</span>
+            <span class="mf">67.35678538806071</span>
+        <span class="p">]</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We add this as a line to <a class="reference external" href="https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/zonegeometries.json">https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/zonegeometries.json</a></p>
+<p>Then we add the zone ID-Name mapping: <a class="reference external" href="https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/zone_names.json">https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/zone_names.json</a></p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ABC&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;zoneName&quot;</span><span class="o">:</span> <span class="s2">&quot;Narnia&quot;</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+<p>Finally, we add average emissions information here: <a class="reference external" href="https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/co2eq_parameters.json">https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data/co2eq_parameters.json</a></p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;ABC&quot;</span><span class="o">:</span> <span class="p">{</span>
+  <span class="s2">&quot;_source&quot;</span><span class="o">:</span> <span class="s2">&quot;Narnia Bureau of Energy: narnia.gov/carbon&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;carbonIntensity&quot;</span><span class="o">:</span> <span class="mf">1.2814555481099</span><span class="p">,</span>
+  <span class="s2">&quot;fossilFuelRatio&quot;</span><span class="o">:</span> <span class="mf">0.00</span><span class="p">,</span>
+  <span class="s2">&quot;renewableRatio&quot;</span><span class="o">:</span> <span class="mf">100.0</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>If we have realtime carbon emissions we can get from the narnia.gov site, we can add a parser and add it to our realtime carbon routing system: <a class="reference external" href="https://github.com/Breakend/experiment-impact-tracker/blob/bf8feba89a0dfc547d6468227e69207f4c5f6bdb/experiment_impact_tracker/emissions/common.py#L1-L6">https://github.com/Breakend/experiment-impact-tracker/blob/bf8feba89a0dfc547d6468227e69207f4c5f6bdb/experiment_impact_tracker/emissions/common.py#L1-L6</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">experiment_impact_tracker.emissions.us_ca_parser</span> <span class="kn">as</span> <span class="nn">us_ca_parser</span>
+<span class="kn">import</span> <span class="nn">experiment_impact_tracker.emissions.narnia_parser</span> <span class="kn">as</span> <span class="nn">narnia_parser</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">REALTIME_REGIONS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;US-CA&quot;</span> <span class="p">:</span> <span class="n">us_ca_parser</span><span class="p">,</span>
+    <span class="s2">&quot;ABC&quot;</span> <span class="p">:</span> <span class="n">narnia_parser</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/emissions/us_ca_parser.py">https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/emissions/us_ca_parser.py</a> for an example of a parser</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">experiment-impact-tracker docs</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="contributing_new_metric.html"
+                        title="next chapter">How to Contribute A New Metric</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/contributing_carbon_region.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing_new_metric.html" title="How to Contribute A New Metric"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="experiment-impact-tracker docs"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">experiment-impact-tracker 1.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Peter Henderson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+    </div>
+  </body>
+</html>

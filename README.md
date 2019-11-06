@@ -2,18 +2,23 @@
 
 ## Compatible Systems
 
-Right now, we're only compatible with Linux systems running NVIDIA GPU's and Intel processors (which support RAPL). If you'd like support for your use-case or encounter missing/broken functionality on your system specs, please open an issue or better yet submit a pull request! It's almost impossible to cover every combination on our own!
+Right now, we're only compatible with Linux systems running NVIDIA GPU's and Intel processors (which support RAPL). 
+
+If you'd like support for your use-case or encounter missing/broken functionality on your system specs, please open an issue or better yet submit a pull request! It's almost impossible to cover every combination on our own!
 
 ## Installation
 
 To install:
 
 ```bash
-cd ClimateChangeFromMachineLearningResearch;
+git clone https://github.com/Breakend/experiment-impact-tracker.git
+cd experiment-impact-tracker
 pip install -e .
 ```
 
 ## Usage
+
+Please go to the docs page for detailed info on the design, usage, and contributing: TODO. Below are some short snippets that might help.
 
 ### Tracking
 You just need to add a few lines of code!
@@ -43,9 +48,26 @@ assert_cpus_by_attributes({ "brand": "Intel(R) Xeon(R) CPU E5-2640 v3 @ 2.60GHz"
 
 ### Generating an HTML appendix
 
-
-Here's an example for us generating an appendix for all the pong experiments
+After putting all your experments into a folder, we can automatically search for the impact tracker's logs and generate an HTML appendix using the command like below:
 
 ```bash
-python ./scripts/create_compute_appendix_html.py ./experiment_results/rl/ --experiment_set_names "ppo2 (stable_baselines)" "a2c (stable_baselines)" "dqn (stable_baselines)" "a2c+vtrace (cule)" --experiment_set_filters "ppo2" "a2c_Pong" "dqn" "vtrace_cule" --output_dir ./testhtml/ --title "PongNoFrameskip-v4 Experiments" --description "Evaluate on separate environments every 250k timesteps in parallel (see code for details), run for 5M timesteps (roughly 23.15 hrs of experience)."
+create-compute-appendix ./data/ --site_spec leaderboard_generation_format.json --output_dir ./site/
 ```
+
+To see this in action, take a look at our RL Energy Leaderboard: https://github.com/Breakend/RL-Energy-Leaderboard
+
+## Building docs
+
+```bash
+sphinx-build -b html docsrc docs
+```
+
+## Citation
+
+If you use this work, please cite our paper:
+
+```
+TODO
+```
+
+

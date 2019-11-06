@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>experiment_impact_tracker.cpu package &#8212; experiment-impact-tracker 1.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">experiment-impact-tracker 1.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiment-impact-tracker-cpu-package">
+<h1>experiment_impact_tracker.cpu package<a class="headerlink" href="#experiment-impact-tracker-cpu-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-experiment_impact_tracker.cpu.common">
+<span id="experiment-impact-tracker-cpu-common-module"></span><h2>experiment_impact_tracker.cpu.common module<a class="headerlink" href="#module-experiment_impact_tracker.cpu.common" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.common.assert_cpus_by_attributes">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.common.</code><code class="sig-name descname">assert_cpus_by_attributes</code><span class="sig-paren">(</span><em class="sig-param">attributes_set</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.common.assert_cpus_by_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assert that you’re running on CPUs with a certain set of attributes.</p>
+<p>This helps when running jobs in a cluster setting with heterogeneous CPUs
+to filter out sets of CPUs that you’d rather avoid. Example attributes:</p>
+<dl class="simple">
+<dt>{</dt><dd><p>“brand”: “Intel(R) Xeon(R) CPU E5-2640 v3 &#64; 2.60GHz”,
+“hz_advertised”: “2.6000 GHz”</p>
+</dd>
+</dl>
+<p>}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes_set</strong> (<em>dict</em>) – set of attribute key pairs</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>CPUAttributeAssertionError on encountered asserted attribute mismatch</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.common.get_cpu_count_adjusted_load_avg">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.common.</code><code class="sig-name descname">get_cpu_count_adjusted_load_avg</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.common.get_cpu_count_adjusted_load_avg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.common.get_cpu_freq">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.common.</code><code class="sig-name descname">get_cpu_freq</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.common.get_cpu_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all cpu freq of all cpu’s available</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.common.get_hz_actual">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.common.</code><code class="sig-name descname">get_hz_actual</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.common.get_hz_actual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current effective Hz of the CPU</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Hz</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.common.get_my_cpu_info">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.common.</code><code class="sig-name descname">get_my_cpu_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.common.get_my_cpu_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather current cpu hardware info for this machine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>info about cpu</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-experiment_impact_tracker.cpu.exceptions">
+<span id="experiment-impact-tracker-cpu-exceptions-module"></span><h2>experiment_impact_tracker.cpu.exceptions module<a class="headerlink" href="#module-experiment_impact_tracker.cpu.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="experiment_impact_tracker.cpu.exceptions.CPUAttributeAssertionError">
+<em class="property">exception </em><code class="sig-prename descclassname">experiment_impact_tracker.cpu.exceptions.</code><code class="sig-name descname">CPUAttributeAssertionError</code><a class="headerlink" href="#experiment_impact_tracker.cpu.exceptions.CPUAttributeAssertionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>An exception that occurs when try to assert a certain CPU attribute and a different one is encountered.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-experiment_impact_tracker.cpu.intel">
+<span id="experiment-impact-tracker-cpu-intel-module"></span><h2>experiment_impact_tracker.cpu.intel module<a class="headerlink" href="#module-experiment_impact_tracker.cpu.intel" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.intel.get_and_cache_cpu_max_tdp_from_intel">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.intel.</code><code class="sig-name descname">get_and_cache_cpu_max_tdp_from_intel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.intel.get_and_cache_cpu_max_tdp_from_intel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes to Intel’s website and pulls information about TDP.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="experiment_impact_tracker.cpu.intel.get_rapl_power">
+<code class="sig-prename descclassname">experiment_impact_tracker.cpu.intel.</code><code class="sig-name descname">get_rapl_power</code><span class="sig-paren">(</span><em class="sig-param">pid_list</em>, <em class="sig-param">logger=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.intel.get_rapl_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather’s CPU information from RAPL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pid_list</strong> (<em>[</em><em>int</em><em>]</em>) – List of process ID’s to attribute power to.</p></li>
+<li><p><strong>logger</strong> (<em>optional</em>) – Logger to use when logging information. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>NotImplementedError</strong> – If an unexpected top-level domain is encountered in RAPL information.</p></li>
+<li><p><strong>ValueError</strong> – If no memory is used by the processes. This seems highly unlikely if not impossible and is probably a bug.</p></li>
+<li><p><strong>ValueError</strong> – If RAPL power estimates are coming back 0. This is unlikely if not impossible so is probably an error.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Information about CPU</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-experiment_impact_tracker.cpu.rapl">
+<span id="experiment-impact-tracker-cpu-rapl-module"></span><h2>experiment_impact_tracker.cpu.rapl module<a class="headerlink" href="#module-experiment_impact_tracker.cpu.rapl" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDifference">
+<em class="property">class </em><code class="sig-prename descclassname">experiment_impact_tracker.cpu.rapl.</code><code class="sig-name descname">RAPLDifference</code><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDifference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#experiment_impact_tracker.cpu.rapl.RAPLSample" title="experiment_impact_tracker.cpu.rapl.RAPLSample"><code class="xref py py-class docutils literal notranslate"><span class="pre">experiment_impact_tracker.cpu.rapl.RAPLSample</span></code></a></p>
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDifference.average_power">
+<code class="sig-name descname">average_power</code><span class="sig-paren">(</span><em class="sig-param">package</em>, <em class="sig-param">domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDifference.average_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDomain">
+<em class="property">class </em><code class="sig-prename descclassname">experiment_impact_tracker.cpu.rapl.</code><code class="sig-name descname">RAPLDomain</code><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDomain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDomain.construct">
+<em class="property">classmethod </em><code class="sig-name descname">construct</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">path</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDomain.construct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDomain.is_subdomain">
+<code class="sig-name descname">is_subdomain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDomain.is_subdomain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLDomain.parent_id">
+<code class="sig-name descname">parent_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLDomain.parent_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLMonitor">
+<em class="property">class </em><code class="sig-prename descclassname">experiment_impact_tracker.cpu.rapl.</code><code class="sig-name descname">RAPLMonitor</code><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLMonitor.sample">
+<em class="property">classmethod </em><code class="sig-name descname">sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLMonitor.sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLSample">
+<em class="property">class </em><code class="sig-prename descclassname">experiment_impact_tracker.cpu.rapl.</code><code class="sig-name descname">RAPLSample</code><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLSample.energy">
+<code class="sig-name descname">energy</code><span class="sig-paren">(</span><em class="sig-param">package</em>, <em class="sig-param">domain=None</em>, <em class="sig-param">unit=1</em><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLSample.energy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="experiment_impact_tracker.cpu.rapl.RAPLSample.take_sample">
+<em class="property">classmethod </em><code class="sig-name descname">take_sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#experiment_impact_tracker.cpu.rapl.RAPLSample.take_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-experiment_impact_tracker.cpu">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-experiment_impact_tracker.cpu" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">experiment_impact_tracker.cpu package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-experiment_impact_tracker.cpu.common">experiment_impact_tracker.cpu.common module</a></li>
+<li><a class="reference internal" href="#module-experiment_impact_tracker.cpu.exceptions">experiment_impact_tracker.cpu.exceptions module</a></li>
+<li><a class="reference internal" href="#module-experiment_impact_tracker.cpu.intel">experiment_impact_tracker.cpu.intel module</a></li>
+<li><a class="reference internal" href="#module-experiment_impact_tracker.cpu.rapl">experiment_impact_tracker.cpu.rapl module</a></li>
+<li><a class="reference internal" href="#module-experiment_impact_tracker.cpu">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/experiment_impact_tracker.cpu.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">experiment-impact-tracker 1.1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Peter Henderson.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+    </div>
+  </body>
+</html>
