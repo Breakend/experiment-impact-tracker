@@ -1,4 +1,4 @@
-# ClimateChangeFromMachineLearningResearch
+# experiment-impact-tracker
 
 ## Compatible Systems
 
