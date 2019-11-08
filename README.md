@@ -85,4 +85,5 @@ If you use this work, please cite our paper:
 TODO
 ```
 
+Also, we rely on a number of downstream packages and work to make this work possible. For carbon accounting, we relied on open source code from https://www.electricitymap.org/ as an initial base. psutil provides many of the compute metrics we use. nvidia-smi and Intel RAPL provide energy metrics. 
 
