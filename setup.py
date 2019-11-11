@@ -36,7 +36,9 @@ setup(name='experiment_impact_tracker',
           'arrow',
           'bootstrapped',
           'jinja2',
-          'tqdm',
+          'progiter', # tqdm doesn't play well with multi-threading
+                      # and can lead to deadlocks. progiter is single threaded
+                      # so we used it instead in this package
           'psutil',
           'seaborn'
       ], 

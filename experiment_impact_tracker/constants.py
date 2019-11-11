@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-from tqdm import tqdm
+from progiter import ProgIter
 
 import ujson as json
 from shapely.geometry import shape
@@ -20,7 +20,7 @@ def read_terrible_json(path):
     with open(path, 'rt') as f:
         lines = []
         test_read_lines = [x for x in f.readlines()]
-        for x in tqdm(test_read_lines):
+        for x in ProgIter(test_read_lines):
             if x:
                 x = x.replace("/", "\/")
                 x = json.loads(x)
