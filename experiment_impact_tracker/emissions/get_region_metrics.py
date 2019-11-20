@@ -1,5 +1,7 @@
 from .constants import REGIONS_WITH_BOUNDING_BOXES, ZONE_INFO, ZONE_NAMES
 from shapely.geometry import Point
+from functools import lru_cache
+import time
 
 def get_zone_information_by_coords(coords):
     region = get_region_by_coords(coords)
@@ -27,7 +29,8 @@ def get_current_location():
     g = geocoder.ip('me')
     return g.y, g.x
 
-def get_current_region_info():
+@lru_cache(maxsize=32)
+def get_current_region_info(*args, **kwargs):
     return get_zone_information_by_coords(get_current_location())
 
 def get_zone_name_by_id(zone_id):
@@ -40,3 +43,12 @@ def get_zone_name_by_id(zone_id):
 def get_sorted_region_infos():
     zone_infos = [(key, value['carbonIntensity']) for key, value in ZONE_INFO.items()]
     return sorted(zone_infos, key=lambda x: x[1])
+
+
+def get_ttl_hash(seconds=3600):
+    """Return the same value withing `seconds` time period"""
+    return round(time.time() / seconds)
+
+def get_current_region_info_cached():
+    return get_current_region_info(ttl_hash=get_ttl_hash(seconds=60*60))
+    

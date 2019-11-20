@@ -23,12 +23,12 @@ from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_rapl_power
-from experiment_impact_tracker.data_info_and_router import DATA_HEADERS
+from experiment_impact_tracker.data_info_and_router import DATA_HEADERS, INITIAL_INFO
 from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
                                                   get_nvidia_gpu_power)
 from experiment_impact_tracker.utils import write_json_data_to_file, safe_file_path, processify, get_timestamp
 from experiment_impact_tracker.emissions.common import is_capable_realtime_carbon_intensity
-
+from experiment_impact_tracker.emissions.get_region_metrics import get_current_region_info_cached
 
 SLEEP_TIME = 1
 
@@ -51,9 +51,8 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
     process_ids = [current_process.pid] + \
         [child.pid for child in current_process.children(recursive=True)]
     process_ids = list(set(process_ids)) # dedupe so that we don't double count by accident
-    compatibilities = _get_compatibilities(region=initial_info['region']['id'])
 
-    required_headers = _get_compatible_data_headers(compatibilities)
+    required_headers = _get_compatible_data_headers(get_current_region_info_cached()[0])
 
     header_information = {}
 
@@ -112,92 +111,47 @@ def launch_power_monitor(queue, log_dir, initial_info, logger=None):
         time.sleep(SLEEP_TIME)
 
 
-def _is_nvidia_compatible():
-    from shutil import which
-
-    if which("nvidia-smi") is None:
-        return False
-
-    # make sure that nvidia-smi doesn't just return no devices
-    p = Popen(['nvidia-smi'], stdout=PIPE)
-    stdout, stderror = p.communicate()
-    output = stdout.decode('UTF-8')
-    if "no devices" in output.lower():
-        return False
-
-    return True
-
-
-def _get_compatibilities(required_elements=[], region=None):
-    if not (platform == "linux" or platform == "linux2"):
-        raise NotImplementedError(
-            "Do not currently support systems outside of linux. Sorry! Please feel free to send a pull request for compatibility.")
-
-    compatibilities = ["all"]
-
-    if rapl._is_rapl_compatible():
-        compatibilities.append("rapl")
-        compatibilities.append("cpu")
-
-    if _is_nvidia_compatible():
-        compatibilities.append("nvidia")
-        compatibilities.append("gpu")
-
-    # print("region: {}".format(region))
-    # print(is_capable_realtime_carbon_intensity(region))
-    if region is not None and is_capable_realtime_carbon_intensity(region):
-        compatibilities.append("realtime_carbon")
-
-    if "cpu" not in compatibilities:
-        raise ValueError(
-            "Looks like there's no current method to gather cpu information. At minimum we require this for informative logging.")
-
-    for element in required_elements:
-        if element not in compatibilities:
-            raise ValueError(
-                "Looks like there's a requirement to log {}, but didn't find a method to do this. Please add a pull request if you'd like that information on your system!".format(element))
-
-    return compatibilities
-
-
-def _get_compatible_data_headers(compatibilities):
+def _get_compatible_data_headers(region=None):
     compatible_headers = []
 
     for header in DATA_HEADERS:
-        if not set(compatibilities).isdisjoint(header["compatability"]):
-            # has shared element
+        compat = True
+        for compatability_fn in header["compatability"]:
+            if not compatability_fn(region=region):
+                compat = False
+                break
+        if compat:
             compatible_headers.append(header)
+            
     return compatible_headers
+
+def _validate_compatabilities(compatabilities, *args, **kwargs):
+    for compatability_fn in compatabilities:
+        if not compatability_fn(*args, **kwargs):
+            return False
+    return True          
+
 
 
 def gather_initial_info(log_dir):
     # TODO: log one time info: CPU/GPU info, version of this package, region, datetime for start of experiment, CO2 estimate data.
     # this will be used to build a latex table later.
 
-    from experiment_impact_tracker.get_region_metrics import get_current_region_info
-    from experiment_impact_tracker.py_environment.common import get_python_packages_and_versions
-    import experiment_impact_tracker
-    region, zone_info = get_current_region_info()
+
     info_path = safe_file_path(os.path.join(log_dir, INFOPATH))
 
-    compatibilities = _get_compatibilities(region=region["id"])
+    data = {}
 
-    data = {
-        "cpu_info": get_my_cpu_info(),
-        "experiment_impact_tracker_version": experiment_impact_tracker.__version__,
-        "region": region,
-        "experiment_start": datetime.now(),
-        "python_package_info" : get_python_packages_and_versions(),
-        "region_carbon_intensity_estimate": zone_info  # kgCO2/kWh
-    }
-
-    if "gpu" in compatibilities:
-        data["gpu_info"] = get_gpu_info()
+    # Gather all the one-time info specified by the appropriate router
+    for info_ in INITIAL_INFO:
+        key = info_["name"]
+        compatabilities = info_["compatability"]
+        if _validate_compatabilities(compatabilities):
+            data[key] = info_["routing"]["function"]()
 
     with open(info_path, 'wb') as info_file:
         pickle.dump(data, info_file)
 
-    compatible_data_headers = _get_compatible_data_headers(compatibilities)
     # touch datafile to clear out any past cruft and write headers
 
     data_path = safe_file_path(os.path.join(log_dir, DATAPATH))
@@ -205,9 +159,7 @@ def gather_initial_info(log_dir):
         os.remove(data_path)
 
     Path(data_path).touch()
-    # write_csv_data_to_file(
-    #     data_path, [x["name"] for x in compatible_data_headers], 
-    #     overwrite=True)
+
     return data
 
 

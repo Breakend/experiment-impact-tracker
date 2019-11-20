@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 
-import sys
 import argparse
-from experiment_impact_tracker.get_region_metrics import get_current_region_info, get_sorted_region_infos, get_zone_information_by_coords
+import sys
 from pprint import pprint
+
 from geopy.geocoders import Nominatim
+
+from experiment_impact_tracker.emissions.get_region_metrics import (
+    get_current_region_info, get_sorted_region_infos,
+    get_zone_information_by_coords)
+
 
 def cmdline_args():
     # Make parser object
@@ -14,29 +19,14 @@ def cmdline_args():
         """,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
-    p.add_argument("command", help="The thing to run from: [current, top, bottom, longlat, address]")
-    p.add_argument("--n", type=int)
-    p.add_argument("--lat", type=float)
-    p.add_argument("--lon", type=float)
-    p.add_argument("--address", type=str)
-    # p.add_argument("required_int", type=int,
-    #                help="req number")
-    # p.add_argument("--on", action="store_true",
-    #                help="include to enable")
-    # p.add_argument("-v", "--verbosity", type=int, choices=[0,1,2], default=0,
-    #                help="increase output verbosity")
-                   
-    # group1 = p.add_mutually_exclusive_group(required=True)
-    # group1.add_argument('--enable',action="store_true")
-    # group1.add_argument('--disable',action="store_false")
-
+    p.add_argument("command", help="Choose a command among: [current, top, bottom, longlat, address]. Current uses the IP address to get current region info. Top and bottom list the N regions of most and least carbon intensity. longlat uses geocoordinates. address uses address info to lookup carbon info.")
+    p.add_argument("--n", type=int, help="The number of emissions to print if command is: [top,bottom]")
+    p.add_argument("--lat", type=float, help="Latitude if using longlat command")
+    p.add_argument("--lon", type=float, help="Longitude if using longlat command")
+    p.add_argument("--address", type=str, help="The address to lookup if using the address command")
     return(p.parse_args())
 
 
-    
-# Try running with these args
-#
-# "Hello" 123 --enable
 if __name__ == '__main__':
     
     if sys.version_info<(3,0,0):

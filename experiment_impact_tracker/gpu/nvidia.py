@@ -19,7 +19,23 @@ from .exceptions import GPUAttributeAssertionError
 _timer = getattr(time, 'monotonic', time.time)
 
 
-def get_gpu_info():
+def is_nvidia_compatible(*args, **kwargs):
+    from shutil import which
+
+    if which("nvidia-smi") is None:
+        return False
+
+    # make sure that nvidia-smi doesn't just return no devices
+    p = Popen(['nvidia-smi'], stdout=PIPE)
+    stdout, stderror = p.communicate()
+    output = stdout.decode('UTF-8')
+    if "no devices" in output.lower():
+        return False
+
+    return True
+
+
+def get_gpu_info(*args, **kwargs):
     p = Popen(['nvidia-smi', '-q', '-x'], stdout=PIPE)
     outs, errors = p.communicate()
     xml = fromstring(outs)

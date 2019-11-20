@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 import psutil
-from experiment_impact_tracker.constants import PUE
+from experiment_impact_tracker.emissions.constants import PUE
 from experiment_impact_tracker.data_utils import load_data_into_frame
 from experiment_impact_tracker.data_utils import *
 
@@ -125,10 +125,18 @@ def gather_additional_info(info, logdir):
 
     total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
     total_power = total_power_per_timestep.sum()
+    realtime_carbon = None
     if "realtime_carbon_intensity" in df:
         realtime_carbon = df["realtime_carbon_intensity"]
         realtime_carbon.loc[len(realtime_carbon)] = realtime_carbon.loc[len(realtime_carbon)-1]
-        estimated_carbon_impact_grams_per_timestep = np.multiply(total_power_per_timestep, realtime_carbon)
+        # If we lost some values due to network errors, forward fill the last available value. 
+        # Backfill in a second pass to get any values that haven't been picked up.
+        # Then finally, if any values remain, replace with the region average.
+        realtime_carbon = pd.to_numeric(realtime_carbon, errors='coerce').fillna(method='ffill').fillna(method='bfill').fillna(value=info["region_carbon_intensity_estimate"]["carbonIntensity"])
+        try:
+            estimated_carbon_impact_grams_per_timestep = np.multiply(total_power_per_timestep, realtime_carbon)
+        except:
+            import pdb; pdb.set_trace()
         estimated_carbon_impact_grams = estimated_carbon_impact_grams_per_timestep.sum()
     else:
         estimated_carbon_impact_grams = total_power * \
@@ -151,7 +159,7 @@ def gather_additional_info(info, logdir):
         "exp_len_hours" : exp_len_hours
      }
 
-    if "realtime_carbon_intensity" in df:
-        data["average_realtime_carbon_intensity"] = df["realtime_carbon_intensity"].mean()
+    if realtime_carbon is not None:
+        data["average_realtime_carbon_intensity"] = realtime_carbon.mean()
 
     return data

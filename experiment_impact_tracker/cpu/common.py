@@ -1,7 +1,7 @@
 import cpuinfo
 import psutil
 from .exceptions import CPUAttributeAssertionError
-
+from sys import platform
 
 def get_my_cpu_info():
     """ Gather current cpu hardware info for this machine.
@@ -10,7 +10,8 @@ def get_my_cpu_info():
         dict : info about cpu
     """
     most_info = cpuinfo.get_cpu_info()
-    most_info["usable_cpus"] = len(psutil.Process().cpu_affinity())
+    if platform != "darwin":
+        most_info["usable_cpus"] = len(psutil.Process().cpu_affinity())
     return most_info
 
 def get_hz_actual(*args, **kwargs):

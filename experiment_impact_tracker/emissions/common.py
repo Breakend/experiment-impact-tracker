@@ -5,8 +5,8 @@ REALTIME_REGIONS = {
     "US-CA" : us_ca_parser
 }
 
-def is_capable_realtime_carbon_intensity(region):
-    return region in REALTIME_REGIONS
+def is_capable_realtime_carbon_intensity(*args, region=None, **kwargs):
+    return region in list(REALTIME_REGIONS.keys())
     
 def get_realtime_carbon_source(region):
     return REALTIME_REGIONS[region].get_realtime_carbon_source()

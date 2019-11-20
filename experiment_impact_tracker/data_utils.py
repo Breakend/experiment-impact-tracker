@@ -49,7 +49,7 @@ def write_csv_data_to_file(file_path, data, overwrite=False):
 def write_json_data_to_file(file_path, data, overwrite=False):
     file_path = safe_file_path(file_path)
     with open(file_path, 'w' if overwrite else 'a') as outfile:
-        outfile.write(ujson.dumps(data) + "\n")
+        outfile.write(json.dumps(data) + "\n")
 
 def zip_data_and_info(log_dir, zip_path):
     info_path = safe_file_path(os.path.join(log_dir, INFOPATH))
