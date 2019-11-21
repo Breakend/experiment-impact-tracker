@@ -7,16 +7,16 @@ import string
 import seaborn as sns
 from experiment_impact_tracker.data_utils import load_data_into_frame
 
-SMALL_SIZE = 16
-MEDIUM_SIZE = 18
-BIGGER_SIZE = 22
+SMALL_SIZE = 22
+MEDIUM_SIZE = 24
+BIGGER_SIZE = 26
 
 plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
 plt.rc('axes', titlesize=MEDIUM_SIZE)     # fontsize of the axes title
 plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
 plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
 plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('legend', fontsize=MEDIUM_SIZE)    # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 # def random_suffix(length=4):
@@ -109,8 +109,9 @@ def create_scatterplot_from_df(df, x: str, y: str, output_path: str ='.', fig_x:
     os.makedirs(out_dir, exist_ok=True)
     a4_dims = (14, 9)
     fig, ax = plt.subplots(figsize=a4_dims)
-    graph = sns.scatterplot(ax=ax, x=x, y=y, data=df, s=250,  alpha=.5, hue='Experiment', legend='brief')#, palette="Set1")
+    graph = sns.scatterplot(ax=ax, x=x, y=y, data=df, s=325,  alpha=.5, hue='Experiment', legend='brief')#, palette="Set1")
     box = ax.get_position()
+    plt.legend(markerscale=2)
     # ax.set_position([box.x0,box.y0,box.width*0.83,box.height])
     # plt.legend(loc='upper left',bbox_to_anchor=(1,1.15))
     # plt.ylim(bottom=0.0)
