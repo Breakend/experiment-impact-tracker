@@ -236,7 +236,7 @@ def _aggregated_data_for_filterset(output_dir,
     }
 
 
-def _create_leaf_page(output_directory, all_infos, exp_set_name, experiment_set_names, experiment_set_filters, base_dir):
+def _create_leaf_page(output_directory, all_infos, exp_set_name, description, experiment_set_names, experiment_set_filters, base_dir):
     template_directory = os.path.join(os.path.dirname(
         experiment_impact_tracker.__file__), 'html_templates')
     file_loader = FileSystemLoader(template_directory)
@@ -258,6 +258,7 @@ def _create_leaf_page(output_directory, all_infos, exp_set_name, experiment_set_
         exps=list(range(len(list(aggregated_info[exp_set_name].values())[0]))),
         summary=pd.DataFrame(summary_info),
         title=exp_set_name,
+        description=description,
         relative_base_dir=os.path.relpath(base_dir, output_directory)
     )
     os.makedirs(os.path.join(output_directory,
@@ -373,7 +374,7 @@ def _recursive_create(all_log_dirs, output_directory, experiment_def, base_dir=N
             all_infos = _aggregated_data_for_filterset(output_directory, filtered_dirs, experiment_set_names,
                                                        experiment_set_filters, only_summary_level=False, extra_files_processors=extra_files_processors)
 
-            _create_leaf_page(output_directory, all_infos, experiment_set,
+            _create_leaf_page(output_directory, all_infos, experiment_set, values["description"],
                               experiment_set_names, experiment_set_filters, base_dir=base_dir)
 
 
