@@ -76,12 +76,17 @@ Basically, you can group several runs together and specify variables to summariz
 }
 ```
 
+Then you just run this script, pointing to your data, the json file and an output directory. 
 
 ```bash
 create-compute-appendix ./data/ --site_spec leaderboard_generation_format.json --output_dir ./site/
 ```
 
-To see this in action, take a look at our RL Energy Leaderboard: https://github.com/Breakend/RL-Energy-Leaderboard
+To see this in action, take a look at our RL Energy Leaderboard. 
+
+The specs are here: https://github.com/Breakend/RL-Energy-Leaderboard
+
+And the output looks like this: https://breakend.github.io/RL-Energy-Leaderboard/reinforcement_learning_energy_leaderboard/
 
 ### Asserting certain hardware
 
