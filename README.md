@@ -102,6 +102,32 @@ We can also use a script to automatically generate a carbon impact statement for
 generate-carbon-impact-statement my_directories that_contain all_my_experiments "USA"
 ```
 
+### Looking up cloud provider emission info
+
+Based on energy grid locations, we can estimate emission from cloud providers using our tools. A script to do that is here:
+
+```bash
+lookup-cloud-region-info aws
+```
+
+### Or you can look up emissions information for your own address!
+
+```bash
+
+% get-region-emissions-info address --address "Stanford, California"
+
+({'geometry': <shapely.geometry.multipolygon.MultiPolygon object at 0x1194c3b38>,
+  'id': 'US-CA',
+  'properties': {'zoneName': 'US-CA'},
+  'type': 'Feature'},
+ {'_source': 'https://github.com/tmrowco/electricitymap-contrib/blob/master/config/co2eq_parameters.json '
+             '(ElectricityMap Average, 2019)',
+  'carbonIntensity': 250.73337617853463,
+  'fossilFuelRatio': 0.48888711737336304,
+  'renewableRatio': 0.428373256377554})
+  
+  ```
+
 ### Asserting certain hardware
 
 It may be the case that you're trying to run two sets of experiments and compare emissions/energy/etc. In this case, you generally want to ensure that there's parity between the two sets of experiments. If you're running on a cluster you might not want to accidentally use a different GPU/CPU pair. To get around this we provided an assertion check that you can add to your code that will kill a job if it's running on a wrong hardware combo. For example:
