@@ -50,17 +50,23 @@ First, create a json file with the structure of the website you'd like to see (t
 
 For an example of all the capabilities of the tool you can see the json structure here: https://github.com/Breakend/RL-Energy-Leaderboard/blob/master/leaderboard_generation_format.json
 
-Basically, you can group several runs together and specify variables to summarize.
+Basically, you can group several runs together and specify variables to summarize. You should probably just copypaste the example above and remove what you don't need, but here are some descriptions of what is being specified:
 
-```bash
+```javascript
 "Comparing Translation Methods" : {
-  "filter" : "(translation)", # this regex we use to look through the directory you specify and find experiments with this in the directory structure,
-  "description" : "An experiment on translation.", # Use this to talk about your experiment
+  # FILTER: this regex we use to look through the directory 
+  # you specify and find experiments with this in the directory structure,
+  "filter" : "(translation)", 
+ 
+  # Use this to talk about your experiment
+  "description" : "An experiment on translation.", 
+  
   # executive_summary_variables: this will aggregate the sums and averages across these metrics.
   # you can see available metrics to summarize here: 
   # https://github.com/Breakend/experiment-impact-tracker/blob/master/experiment_impact_tracker/data_info_and_router.py
   "executive_summary_variables" : ["total_power", "exp_len_hours", "cpu_hours", "gpu_hours", "estimated_carbon_impact_kg"],   
-  "executive_summary_ordering_variable" : "estimated_carbon_impact_kg", # the variable used to rank experiments
+  
+  # The child experiments to group together
   "child_experiments" : 
         {
             "Transformer Network" : {
