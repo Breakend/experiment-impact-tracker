@@ -57,12 +57,22 @@ setup(name='experiment_impact_tracker',
             'recommonmark'
         ]
       },
-      description='A toolkit for easy evaluation of Deep RL algorithms.',
+      description='A toolkit for tracking energy, carbon, and compute metrics for machine learning (or any other) experiments.',
       author='Peter Henderson',
-      url='https://github.com/Breakend/DeepRLEvaluationToolkit',
-      keywords="machine-learning ",
+      url='https://github.com/Breakend/experiment-impact-tracker',
+      keywords=["machine learning", "carbon", "energy", "compute"],
+      download_url="https://github.com/Breakend/experiment-impact-tracker/archive/0.1.3.tar.gz",
       license="MIT",
-      version=main_ns['__version__']
+      version=main_ns['__version__'],
+        classifiers=[
+    'Development Status :: 3 - Alpha',      # Chose either "3 - Alpha", "4 - Beta" or "5 - Production/Stable" as the current state of your package
+    'Intended Audience :: Developers',      # Define that your audience are developers
+    'Topic :: Software Development :: Build Tools',
+    'License :: OSI Approved :: MIT License',   # Again, pick a license
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
+  ]
       )
 
 # python setup.py sdist
