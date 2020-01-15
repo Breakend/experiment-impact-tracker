@@ -5,6 +5,7 @@ from collections import OrderedDict
 from subprocess import PIPE, Popen
 from xml.etree.ElementTree import fromstring
 
+from io import StringIO 
 import numpy as np
 import pandas as pd
 import requests
@@ -119,8 +120,7 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
     out_str_final = out_str_final.replace("-", "0")
     out_str_final = out_str_final.replace("#", "")
 
-    df = pd.read_csv(pd.compat.StringIO(
-        out_str_final), engine='python', delim_whitespace=True)
+    df = pd.read_csv(StringIO(out_str_final), engine='python', delim_whitespace=True)
     process_percentage_used_gpu = df.groupby(
         ['gpu', 'pid']).mean().reset_index()
 
