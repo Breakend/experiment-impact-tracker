@@ -1,0 +1,20 @@
+name,tdp,source
+RTX 2080 Ti,250,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+RTX 2080,215,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+GTX 1080 Ti,250,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+GTX 1080,180,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+AMD RX480,150,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+Titan V,250,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+Tesla V100,300,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+TPU2,250,https://www.nextplatform.com/2018/05/10/tearing-apart-googles-tpu-3-0-ai-coprocessor/|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+TPU3,200,https://www.nextplatform.com/2018/05/10/tearing-apart-googles-tpu-3-0-ai-coprocessor/|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+Intel Xeon E5-2699,145,https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+AGX Xavier,30,https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+GTX TITAN X,250,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+TITAN X Pascal,250,techpowerup.com|https://raw.githubusercontent.com/mlco2/impact/master/data/gpus.csv
+NVIDIA V100 PCIe,250,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
+NVIDIA P100 PCIe,250,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
+NVIDIA Tesla M40,250,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
+NVIDIA GTX 980,165,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
+NVIDIA Tesla K80,300,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
+NVIDIA Tesla K40,235,https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units

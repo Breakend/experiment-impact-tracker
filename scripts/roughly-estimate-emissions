@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+from pprint import pprint
+import pandas as pd
+import os
+from geopy.geocoders import Nominatim
+import geocoder
+import experiment_impact_tracker
+from experiment_impact_tracker.emissions.get_region_metrics import (
+    get_current_region_info, get_sorted_region_infos,
+    get_zone_information_by_coords)
+
+gpu_data = pd.read_csv(os.path.join(os.path.dirname(experiment_impact_tracker.__file__), 'gpu/data/tdp.csv'))
+
+def cmdline_args():
+    # Make parser object
+    p = argparse.ArgumentParser(description=
+        """
+        This estimates the amount of energy used and emission based on IP address of your server, GPU type, experiment length, and some utilization factor. 
+        This is similar to what is done by https://mlco2.github.io/impact/#compute. Please also cite their paper if using this script.
+        """,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    p.add_argument("--experiment-length-seconds", type=float, help="")
+    p.add_argument("--ip-address", type=str, help="")
+    p.add_argument("--gpu", type=str, help="From [{}]".format(", ".join(gpu_data["name"])))
+    p.add_argument("--utilization-factor", type=float)
+    return(p.parse_args())
+
+
+if __name__ == '__main__':
+    
+    if sys.version_info<(3,0,0):
+        sys.stderr.write("You need python 3.0 or later to run this script\n")
+        sys.exit(1)
+
+    args = cmdline_args()
+    gpu_vals = gpu_data.loc[gpu_data['name'] == args.gpu]
+
+    g = geocoder.ip(args.ip_address)
+
+    zone_name, zone_info = get_zone_information_by_coords((g.y, g.x))
+
+    pprint(zone_name)
+
+    carbonIntensity = zone_info['carbonIntensity']
+
+    kWh = float(gpu_vals['tdp']) * args.utilization_factor * (args.experiment_length_seconds / 3600.) /1000.
+
+    print("NOTE: this is a very rough estimation")
+    print("Energy used: {} kWh".format(kWh))
+    print("Carbon used: {} kg CO2eq".format((carbonIntensity * kWh) / 1000.0))
