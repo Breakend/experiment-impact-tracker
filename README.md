@@ -11,9 +11,7 @@ https://breakend.github.io/RL-Energy-Leaderboard/reinforcement_learning_energy_l
 To install:
 
 ```bash
-git clone https://github.com/Breakend/experiment-impact-tracker.git
-cd experiment-impact-tracker
-pip install -e .
+pip install experiment-impact-tracker
 ```
 
 ## Usage
