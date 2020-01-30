@@ -61,7 +61,6 @@ setup(name='experiment_impact_tracker',
       author='Peter Henderson',
       url='https://github.com/Breakend/experiment-impact-tracker',
       keywords=["machine learning", "carbon", "energy", "compute"],
-      download_url="https://github.com/Breakend/experiment-impact-tracker/archive/0.1.3.tar.gz",
       license="MIT",
       version=main_ns['__version__'],
         classifiers=[

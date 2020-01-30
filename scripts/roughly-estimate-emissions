@@ -8,6 +8,7 @@ import os
 from geopy.geocoders import Nominatim
 import geocoder
 import experiment_impact_tracker
+
 from experiment_impact_tracker.emissions.get_region_metrics import (
     get_current_region_info, get_sorted_region_infos,
     get_zone_information_by_coords)
@@ -23,10 +24,10 @@ def cmdline_args():
         """,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
-    p.add_argument("--experiment-length-seconds", type=float, help="")
-    p.add_argument("--ip-address", type=str, help="")
-    p.add_argument("--gpu", type=str, help="From [{}]".format(", ".join(gpu_data["name"])))
-    p.add_argument("--utilization-factor", type=float)
+    p.add_argument("--experiment-length-seconds", type=float, help="The length of your experiment in seconds.")
+    p.add_argument("--ip-address", type=str, help="The IP address of the machine which ran the experiment.")
+    p.add_argument("--gpu", type=str, help="The GPU name, from [{}]".format(", ".join(gpu_data["name"])))
+    p.add_argument("--utilization-factor", type=float, help="What percentage of the GPU do you think your application used.")
     return(p.parse_args())
 
 
