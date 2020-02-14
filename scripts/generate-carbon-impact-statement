@@ -214,11 +214,13 @@ def main(arguments):
     """
 
     bibtex_experiment_impact_tracker = """
-    @article{henderson2019climate,
-        title={Accountability and Efficiency of Machine Learning Research in Energy, Carbon, and Compute},
-        author={ Henderson, Peter and Hu, Jieru and Romoff, Joshua and Brunskill, Emma and Pineau, Joelle and Jurafsky, Dan},
-        journal={arxiv pre-print},
-        year={2019}
+    @misc{henderson2020systematic,
+        title={Towards the Systematic Reporting of the Energy and Carbon Footprints of Machine Learning},
+        author={Peter Henderson and Jieru Hu and Joshua Romoff and Emma Brunskill and Dan Jurafsky and Joelle Pineau},
+        year={2020},
+        eprint={2002.05651},
+        archivePrefix={arXiv},
+        primaryClass={cs.CY}
     }
     """
     print(
