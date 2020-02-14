@@ -168,7 +168,14 @@ OS:
 If you use this work, please cite our paper:
 
 ```
-TODO
+@misc{henderson2020systematic,
+    title={Towards the Systematic Reporting of the Energy and Carbon Footprints of Machine Learning},
+    author={Peter Henderson and Jieru Hu and Joshua Romoff and Emma Brunskill and Dan Jurafsky and Joelle Pineau},
+    year={2020},
+    eprint={2002.05651},
+    archivePrefix={arXiv},
+    primaryClass={cs.CY}
+}
 ```
 
 Also, we rely on a number of downstream packages and work to make this work possible. For carbon accounting, we relied on open source code from https://www.electricitymap.org/ as an initial base. psutil provides many of the compute metrics we use. nvidia-smi and Intel RAPL provide energy metrics. 
