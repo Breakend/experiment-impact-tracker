@@ -20,10 +20,12 @@ Please go to the docs page for detailed info on the design, usage, and contribut
 
 If you think the docs aren't helpful or need more expansion, let us know with a Github Issue!
 
-Below are some short snippets that might help.
+Below we will walk through an example together.
 
-### Tracking
-You just need to add a few lines of code!
+### Add Tracking
+We included a simple example in the project which can be found in ``examples/my_experiment.py``
+
+As show in ``my_experiment.py``, you just need to add a few lines of code!
 
 ```python
 from experiment_impact_tracker.compute_tracker import ImpactTracker
@@ -31,22 +33,43 @@ tracker = ImpactTracker(<your log directory here>)
 tracker.launch_impact_monitor()
 ```
 
-This will launch a separate process (more like thread) that will gather compute/energy/carbon information in the background.
+This will launch a separate python process that will gather compute/energy/carbon information in the background.
 
-**NOTE: Because of the way python multiprocessing works, this process will not interrupt the main one UNLESS you periodically call the following. This will read the latest info from the log file and check for any errors that might've occured in the tracking process. If you have a better idea on how to handle exceptions in the tracking thread please open an issue or submit a pull request!!!** 
+**NOTE: Because of the way python multiprocessing works, this process will not interrupt the main one even if the monitoring process errors out. To address this, you can add the following to periodically 
+ read the latest info from the log file and check for any errors that might've occurred in the tracking process. 
+ If you have a better idea on how to handle exceptions in the tracking thread please open an issue or submit a pull request!**
 
-```python
+```python3
 info = tracker.get_latest_info_and_check_for_errors()
+```
+
+To kick off our simple experiment, run ``python my_experiment.py``. You will see our 
+training starts and in the end the script will output something like ``Please find your experiment logs in: /var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpcp7sfese`` 
+
+Now let's go over to the temp dir, we can see our logging there!
+```bash
+$ log_path=/var/folders/n_/9qzct77j68j6n9lh0lw3vjqcn96zxl/T/tmpcp7sfese
+$ cd $log_path
+$ tree 
+.
+└── impacttracker
+    ├── data.json
+    ├── impact_tracker_log.log
+    └── info.pkl
 ```
 
 
 ### Generating an HTML appendix
 
-After putting all your experments into a folder, we can automatically search for the impact tracker's logs and generate an HTML appendix using the command like below.
+After logging all your experiments into a dir, we can automatically search for the impact tracker's 
+logs and generate an HTML appendix.
 
-First, create a json file with the structure of the website you'd like to see (this lets you create hierarchies of experiment as web pages).
+First, create a json file with the structure of the website you'd like to see 
+(this lets you create hierarchies of experiment as web pages).
 
-For an example of all the capabilities of the tool you can see the json structure here: https://github.com/Breakend/RL-Energy-Leaderboard/blob/master/leaderboard_generation_format.json
+For an example of all the capabilities of the tool you can see the json structure 
+here: https://github.com/Breakend/RL-Energy-Leaderboard/blob/master/leaderboard_generation_format.json
+
 
 Basically, you can group several runs together and specify variables to summarize. You should probably just copypaste the example above and remove what you don't need, but here are some descriptions of what is being specified:
 
