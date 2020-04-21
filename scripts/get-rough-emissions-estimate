@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 from pprint import pprint
-import pandas as pd
-import os
-from geopy.geocoders import Nominatim
-import geocoder
-import experiment_impact_tracker
 
+import geocoder
+import pandas as pd
+from geopy.geocoders import Nominatim
+
+import experiment_impact_tracker
 from experiment_impact_tracker.emissions.get_region_metrics import (
     get_current_region_info, get_sorted_region_infos,
     get_zone_information_by_coords)

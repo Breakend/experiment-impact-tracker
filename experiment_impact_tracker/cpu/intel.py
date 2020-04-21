@@ -2,13 +2,13 @@ import atexit
 import os
 import time
 
+import cpuinfo
 import numpy as np
 import pandas as pd
+import psutil
 import requests
 from bs4 import BeautifulSoup
 
-import cpuinfo
-import psutil
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.utils import *
 
@@ -18,32 +18,52 @@ from . import rapl
 def get_and_cache_cpu_max_tdp_from_intel():
     """ Goes to Intel's website and pulls information about TDP.
     """
-    cpu_brand = cpuinfo.get_cpu_info()['brand'].split(' ')[2]
-    if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cpuinfocache/{}'.format(cpu_brand))):
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cpuinfocache/{}'.format(cpu_brand)), 'r') as f:
+    cpu_brand = cpuinfo.get_cpu_info()["brand"].split(" ")[2]
+    if os.path.exists(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "cpuinfocache/{}".format(cpu_brand),
+        )
+    ):
+        with open(
+            os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "cpuinfocache/{}".format(cpu_brand),
+            ),
+            "r",
+        ) as f:
             return int(f.readline())
     s = requests.Session()
-    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36'
-    s.headers['User-Agent'] = user_agent
-    r = s.get('https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q={}'.format(
-        cpu_brand), allow_redirects=True)
-    soup = BeautifulSoup(r.content, 'lxml')
-    results = soup.find_all('span', attrs={'data-key': "MaxTDP"})
+    user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36"
+    s.headers["User-Agent"] = user_agent
+    r = s.get(
+        "https://ark.intel.com/content/www/us/en/ark/search.html?_charset_=UTF-8&q={}".format(
+            cpu_brand
+        ),
+        allow_redirects=True,
+    )
+    soup = BeautifulSoup(r.content, "lxml")
+    results = soup.find_all("span", attrs={"data-key": "MaxTDP"})
 
     if len(results) == 0:
-        redirect_url = soup.find(id='FormRedirectUrl').attrs['value']
+        redirect_url = soup.find(id="FormRedirectUrl").attrs["value"]
         if redirect_url:
-            r = s.get("https://ark.intel.com/" +
-                      redirect_url, allow_redirects=True)
-            soup = BeautifulSoup(r.content, 'lxml')
-            results = soup.find_all('span', attrs={'data-key': "MaxTDP"})
+            r = s.get("https://ark.intel.com/" + redirect_url, allow_redirects=True)
+            soup = BeautifulSoup(r.content, "lxml")
+            results = soup.find_all("span", attrs={"data-key": "MaxTDP"})
 
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cpuinfocache/{}'.format(cpu_brand)), 'w') as f:
-        f.write((results[0].text.strip().replace('W', '')))
-    return int(results[0].text.strip().replace('W', ''))
+    with open(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "cpuinfocache/{}".format(cpu_brand),
+        ),
+        "w",
+    ) as f:
+        f.write((results[0].text.strip().replace("W", "")))
+    return int(results[0].text.strip().replace("W", ""))
 
 
-_timer = getattr(time, 'monotonic', time.time)
+_timer = getattr(time, "monotonic", time.time)
 
 
 def get_rapl_power(pid_list, logger=None, **kwargs):
@@ -83,7 +103,8 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         except psutil.NoSuchProcess:
             if logger is not None:
                 logger.warn(
-                    "Process with pid {} used to be part of this process chain, but was shut down. Skipping.")
+                    "Process with pid {} used to be part of this process chain, but was shut down. Skipping."
+                )
             continue
 
     # Get initial times and cpu info
@@ -105,7 +126,7 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         pt2 = p.cpu_times()
         st22 = _timer()
         system_wide_pt2 = psutil.cpu_times()
-        infos2.append((st21,st22, system_wide_pt2, pt2))
+        infos2.append((st21, st22, system_wide_pt2, pt2))
 
     # now is a good time to get the power samples that we got the process times for
     s2 = rapl.RAPLMonitor.sample()
@@ -131,14 +152,14 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         # Most processors come in two packages so top level domains shold be package-1 and package-0
         if "package" not in domain.name:
             raise NotImplementedError(
-                "Unexpected top level domain for RAPL package. Not yet supported.")
+                "Unexpected top level domain for RAPL package. Not yet supported."
+            )
 
         total_intel_power += power
 
         for sd in domain.subdomains:
             subdomain = domain.subdomains[sd]
-            power = diff.average_power(
-                package=domain.name, domain=subdomain.name)
+            power = diff.average_power(package=domain.name, domain=subdomain.name)
             subdomain = subdomain.name.lower()
             if subdomain == "ram" or subdomain == "dram":
                 total_dram_power += power
@@ -150,23 +171,23 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
             # will get assigned the same amount of credit as the CPU
 
     if total_gpu_power != 0:
-        raise ValueError(
-            "Don't support credit assignment to Intel RAPL GPU yet.")
+        raise ValueError("Don't support credit assignment to Intel RAPL GPU yet.")
 
     for i, p in enumerate(process_list):
         st1, st12, system_wide_pt1, pt1 = infos1[i]
         st2, st22, system_wide_pt2, pt2 = infos2[i]
-        
+
         # change in cpu-hours process
         delta_proc = (pt2.user - pt1.user) + (pt2.system - pt1.system)
         cpu_util_process = delta_proc / float(st2 - st1)
         # change in cpu-hours system
-        delta_proc2 = (system_wide_pt2.user - system_wide_pt1.user) + \
-            (system_wide_pt2.system - system_wide_pt1.system) 
+        delta_proc2 = (system_wide_pt2.user - system_wide_pt1.user) + (
+            system_wide_pt2.system - system_wide_pt1.system
+        )
         cpu_util_system = delta_proc2 / float(st22 - st12)
 
         # percent of cpu-hours in time frame attributable to this process (e.g., attributable compute)
-        attributable_compute = cpu_util_process / cpu_util_system 
+        attributable_compute = cpu_util_process / cpu_util_system
 
         delta_time = st2 - st1
 
@@ -189,15 +210,24 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
     # uss is unique memory to this process (if you killed it now that would be freed). PSS is shared memory split evenly among processes using the memory
     # summing these two gets us a nice fair metric for the actual memory used in the RAM hardware. The unique bits are directly attributable to the process
     # and the shared bits we give credit based on how many processes share those bits
-    system_wide_mem_percent = np.sum([float(x["uss"] + x["pss"]) / float(total_physical_memory.total - total_physical_memory.available) for x in mem_info_per_process.values()])
+    system_wide_mem_percent = np.sum(
+        [
+            float(x["uss"] + x["pss"])
+            / float(total_physical_memory.total - total_physical_memory.available)
+            for x in mem_info_per_process.values()
+        ]
+    )
 
     power_credit_cpu = cpu_percent
     power_credit_mem = system_wide_mem_percent
     if power_credit_cpu == 0:
-        logger.warn("Problem retrieving CPU usage percentage to assign power credit, not using any CPU. This is possibly true, but seems unlikely! See if there's a problem!")
+        logger.warn(
+            "Problem retrieving CPU usage percentage to assign power credit, not using any CPU. This is possibly true, but seems unlikely! See if there's a problem!"
+        )
     if power_credit_mem == 0:
         raise ValueError(
-            "Problem retrieving Mem usage percentage to assign power credit")
+            "Problem retrieving Mem usage percentage to assign power credit"
+        )
 
     total_attributable_power = 0
     if total_cpu_power != 0:
@@ -206,12 +236,14 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         total_attributable_power += total_dram_power * power_credit_mem
 
     # assign the rest of the power to the CPU percentage even if this is a bit innacurate
-    total_attributable_power += (total_intel_power -
-                                 total_dram_power - total_cpu_power) * power_credit_cpu
+    total_attributable_power += (
+        total_intel_power - total_dram_power - total_cpu_power
+    ) * power_credit_cpu
 
     if total_intel_power == 0:
         raise ValueError(
-            "It seems that power estimates from Intel RAPL are coming back 0, this indicates a problem.")
+            "It seems that power estimates from Intel RAPL are coming back 0, this indicates a problem."
+        )
 
     data_return_values_with_headers = {
         "rapl_power_draw_absolute": total_intel_power,
@@ -219,10 +251,17 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         "cpu_time_seconds": cpu_times_per_process,
         "average_relative_cpu_utilization": cpu_percent,
         "absolute_cpu_utilization": absolute_cpu_percent,
-        "relative_mem_usage" : system_wide_mem_percent,
-        "absolute_mem_usage" : np.sum([float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]),
-        "absolute_mem_percent_usage" : np.sum([float(x["uss"] + x["pss"]) / float(total_physical_memory.total)  for x in mem_info_per_process.values()]),
-        "mem_info_per_process" : mem_info_per_process
+        "relative_mem_usage": system_wide_mem_percent,
+        "absolute_mem_usage": np.sum(
+            [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
+        ),
+        "absolute_mem_percent_usage": np.sum(
+            [
+                float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
+                for x in mem_info_per_process.values()
+            ]
+        ),
+        "mem_info_per_process": mem_info_per_process,
     }
 
     return data_return_values_with_headers

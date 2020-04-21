@@ -17,8 +17,7 @@ def _read_sysfs_file(path):
 def _get_domain_info(path):
     name = _read_sysfs_file("%s/name" % path)
     energy_uj = int(_read_sysfs_file("%s/energy_uj" % path))
-    max_energy_range_uj = int(_read_sysfs_file(
-        "%s/max_energy_range_uj" % path))
+    max_energy_range_uj = int(_read_sysfs_file("%s/max_energy_range_uj" % path))
 
     return name, energy_uj, max_energy_range_uj
 
@@ -30,7 +29,9 @@ def _is_rapl_compatible(*args, **kwargs):
 
 def _walk_rapl_dir(path):
     if not os.path.exists(path):
-        raise ValueError("No RAPL directory exists to read from, RAPL CPU power readings may not be supported on this machine. If you discover a way to read rapl readings, please submit a pull request to update compatibility for your system!")
+        raise ValueError(
+            "No RAPL directory exists to read from, RAPL CPU power readings may not be supported on this machine. If you discover a way to read rapl readings, please submit a pull request to update compatibility for your system!"
+        )
     regex = re.compile("intel-rapl")
 
     for dirpath, dirnames, filenames in os.walk(path, topdown=True):
@@ -41,7 +42,6 @@ def _walk_rapl_dir(path):
 
 
 class RAPLDomain(object):
-
     @classmethod
     def construct(cls, id, path):
         name, energy_uj, max_energy_range_uj = _get_domain_info(path)
@@ -100,7 +100,6 @@ class RAPLDomain(object):
 
 
 class RAPLSample(object):
-
     @classmethod
     def take_sample(cls):
         sample = RAPLSample()
@@ -108,7 +107,9 @@ class RAPLSample(object):
         sample.domains_by_id = {}
         sample.timestamp = datetime.now()
 
-        for dirpath, dirnames, filenames in _walk_rapl_dir("/sys/class/powercap/intel-rapl"):
+        for dirpath, dirnames, filenames in _walk_rapl_dir(
+            "/sys/class/powercap/intel-rapl"
+        ):
             current = dirpath.split("/")[-1]
             splits = current.split(":")
 
@@ -162,7 +163,7 @@ class RAPLSample(object):
         elif unit == JOULES:
             return e / 1000000
         elif unit == WATT_HOURS:
-            return e / (1000000*3600)
+            return e / (1000000 * 3600)
 
 
 class RAPLDifference(RAPLSample):
