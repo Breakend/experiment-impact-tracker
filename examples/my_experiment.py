@@ -1,11 +1,14 @@
-from experiment_impact_tracker.compute_tracker import ImpactTracker
 import sys
-import torch
 import tempfile
+
+import torch
+
+from experiment_impact_tracker.compute_tracker import ImpactTracker
+
 
 class Experiment:
     def __init__(self):
-        device = torch.device('cpu')
+        device = torch.device("cpu")
         # device = torch.device('cuda') # Uncomment this to run on GPU
 
         # N is batch size; D_in is input dimension;
@@ -65,4 +68,3 @@ def my_experiment() -> None:
 
 if __name__ == "__main__":
     my_experiment()
-

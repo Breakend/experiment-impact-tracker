@@ -1,12 +1,14 @@
 # Code in file tensor/two_layer_net_tensor.py
-import torch
 import time
+
+import torch
+
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 
-tracker = ImpactTracker('./testlogs/')
+tracker = ImpactTracker("./testlogs/")
 
 tracker.launch_impact_monitor()
-device = torch.device('cpu')
+device = torch.device("cpu")
 
 # N is batch size; D_in is input dimension;
 # H is hidden dimension; D_out is output dimension.
@@ -22,25 +24,25 @@ w2 = torch.randn(H, D_out, device=device)
 
 learning_rate = 1e-6
 for t in range(1000):
-  # Forward pass: compute predicted y
-  h = x.mm(w1)
-  h_relu = h.clamp(min=0)
-  y_pred = h_relu.mm(w2)
+    # Forward pass: compute predicted y
+    h = x.mm(w1)
+    h_relu = h.clamp(min=0)
+    y_pred = h_relu.mm(w2)
 
-  # Compute and print loss; loss is a scalar, and is stored in a PyTorch Tensor
-  # of shape (); we can get its value as a Python number with loss.item().
-  loss = (y_pred - y).pow(2).sum()
-  print(t, loss.item())
+    # Compute and print loss; loss is a scalar, and is stored in a PyTorch Tensor
+    # of shape (); we can get its value as a Python number with loss.item().
+    loss = (y_pred - y).pow(2).sum()
+    print(t, loss.item())
 
-  # Backprop to compute gradients of w1 and w2 with respect to loss
-  grad_y_pred = 2.0 * (y_pred - y)
-  grad_w2 = h_relu.t().mm(grad_y_pred)
-  grad_h_relu = grad_y_pred.mm(w2.t())
-  grad_h = grad_h_relu.clone()
-  grad_h[h < 0] = 0
-  grad_w1 = x.t().mm(grad_h)
+    # Backprop to compute gradients of w1 and w2 with respect to loss
+    grad_y_pred = 2.0 * (y_pred - y)
+    grad_w2 = h_relu.t().mm(grad_y_pred)
+    grad_h_relu = grad_y_pred.mm(w2.t())
+    grad_h = grad_h_relu.clone()
+    grad_h[h < 0] = 0
+    grad_w1 = x.t().mm(grad_h)
 
-  # Update weights using gradient descent
-  w1 -= learning_rate * grad_w1
-  w2 -= learning_rate * grad_w2
-  tracker.get_latest_info_and_check_for_errors()
+    # Update weights using gradient descent
+    w1 -= learning_rate * grad_w1
+    w2 -= learning_rate * grad_w2
+    tracker.get_latest_info_and_check_for_errors()
