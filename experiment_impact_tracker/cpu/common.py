@@ -8,7 +8,7 @@ from .exceptions import CPUAttributeAssertionError
 
 def get_my_cpu_info():
     """ Gather current cpu hardware info for this machine.
-    
+
     Returns:
         dict : info about cpu
     """
@@ -20,7 +20,7 @@ def get_my_cpu_info():
 
 def get_hz_actual(*args, **kwargs):
     """ Gets the current effective Hz of the CPU
-    
+
     Returns:
         str : Hz
     """
@@ -30,7 +30,10 @@ def get_hz_actual(*args, **kwargs):
 def get_cpu_freq(*args, **kwargs):
     """ Returns all cpu freq of all cpu's available
     """
-    return [x._asdict() for x in psutil.cpu_freq(percpu=True)]
+    try:
+        return [x._asdict() for x in psutil.cpu_freq(percpu=True)]
+    except NotImplementedError: # psutil.cpu_freq() fails on some machines
+        return []
 
 
 def get_cpu_count_adjusted_load_avg(*args, **kwargs):
@@ -43,7 +46,7 @@ def assert_cpus_by_attributes(attributes_set):
     This helps when running jobs in a cluster setting with heterogeneous CPUs
     to filter out sets of CPUs that you'd rather avoid. Example attributes:
 
-    { 
+    {
         "brand": "Intel(R) Xeon(R) CPU E5-2640 v3 @ 2.60GHz",
         "hz_advertised": "2.6000 GHz"
     }
