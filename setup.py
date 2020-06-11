@@ -34,6 +34,7 @@ setup(
         "scipy",
         "joblib",
         "numpy",
+        "country_converter",
         "pandas>0.25.0",
         "matplotlib",
         "py-cpuinfo",
