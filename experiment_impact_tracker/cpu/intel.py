@@ -151,7 +151,11 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         # PSys: Skylake mobile SoC total energy
         # The following relationship holds: PP0 + PP1 <= PKG. DRAM is independent of the other three domains.
         # Most processors come in two packages so top level domains shold be package-1 and package-0
-        if "package" not in domain.name and "psys" not in domain.name:
+
+        if domain.name == "psys": # skip SoC aggregate reporting
+            continue
+            
+        if "package" not in domain.name:
             raise NotImplementedError(
                 "Unexpected top level domain for RAPL package. Not yet supported."
             )
