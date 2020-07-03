@@ -1,2 +1,4 @@
 recursive-include experiment_impact_tracker *.json
 recursive-include experiment_impact_tracker *.csv
+recursive-include experiment_impact_tracker *.html
+recursive-include experiment_impact_tracker *.css
