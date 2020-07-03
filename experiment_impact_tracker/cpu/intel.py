@@ -154,7 +154,7 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
 
         if domain.name == "psys": # skip SoC aggregate reporting
             continue
-            
+
         if "package" not in domain.name:
             raise NotImplementedError(
                 "Unexpected top level domain for RAPL package. Not yet supported."
