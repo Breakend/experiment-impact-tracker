@@ -67,17 +67,17 @@ _timer = getattr(time, "monotonic", time.time)
 
 
 def get_rapl_power(pid_list, logger=None, **kwargs):
-    """ Gather's CPU information from RAPL.
-    
+    """ Gathers CPU information from RAPL.
+
     Args:
-        pid_list ([int]): List of process ID's to attribute power to.
+        pid_list ([int]): List of process IDs to attribute power to.
         logger (optional): Logger to use when logging information. Defaults to None.
-    
+
     Raises:
         NotImplementedError: If an unexpected top-level domain is encountered in RAPL information.
         ValueError: If no memory is used by the processes. This seems highly unlikely if not impossible and is probably a bug.
         ValueError: If RAPL power estimates are coming back 0. This is unlikely if not impossible so is probably an error.
-    
+
     Returns:
         dict: Information about CPU
     """
@@ -148,8 +148,13 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         # PP0: The cores.
         # PP1: An uncore device, usually the GPU (not available on all processor models.)
         # DRAM: main memory (not available on all processor models.)
+        # PSys: Skylake mobile SoC total energy
         # The following relationship holds: PP0 + PP1 <= PKG. DRAM is independent of the other three domains.
         # Most processors come in two packages so top level domains shold be package-1 and package-0
+
+        if domain.name == "psys": # skip SoC aggregate reporting
+            continue
+
         if "package" not in domain.name:
             raise NotImplementedError(
                 "Unexpected top level domain for RAPL package. Not yet supported."

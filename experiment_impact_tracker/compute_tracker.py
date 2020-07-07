@@ -35,7 +35,7 @@ from experiment_impact_tracker.utils import (get_timestamp, processify,
                                              write_json_data_to_file)
 
 SLEEP_TIME = 1
-
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 def read_latest_stats(log_dir):
     log_path = os.path.join(log_dir, DATAPATH)
@@ -81,7 +81,7 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
             log_dir=log_dir,
         )
         end = time.time()
-        logger.warn(
+        logger.info(
             "Datapoint {} took {} seconds".format(header["name"], (end - start))
         )
 
@@ -104,7 +104,7 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
 
 @processify
 def launch_power_monitor(queue, log_dir, initial_info, logger=None):
-    logger.warn("Starting process to monitor power")
+    logger.info("Starting process to monitor power")
     while True:
         try:
             message = queue.get(block=False)
@@ -181,9 +181,9 @@ class ImpactTracker(object):
     def __init__(self, logdir):
         self.logdir = logdir
         self._setup_logging()
-        self.logger.warn("Gathering system info for reproducibility...")
+        self.logger.info("Gathering system info for reproducibility...")
         self.initial_info = gather_initial_info(logdir)
-        self.logger.warn("Done initial setup and information gathering...")
+        self.logger.info("Done initial setup and information gathering...")
 
     def _setup_logging(self):
         # Create a custom logger
