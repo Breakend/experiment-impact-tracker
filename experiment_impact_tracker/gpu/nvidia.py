@@ -177,7 +177,11 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
         power_draw = power_readings.findall("power_draw")[0].text
 
         gpu_data["power_readings"] = {"power_draw": power_draw}
-        absolute_power += float(power_draw.replace("W", ""))
+        try:
+            power_draw_value = float(power_draw.replace("W", ""))
+        except ValueError:
+            power_draw_value = 0.0
+        absolute_power += power_draw_value
 
         # processes
         processes = gpu.findall("processes")[0]
@@ -229,9 +233,12 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
                     # about all gpu's on a slurm cluster even if they're not assigned to a worker
                     performance_state = gpu.findall("performance_state")[0].text
                     per_gpu_performance_states[gpu_id] = performance_state
-
-                power += sm_relative_percent * float(power_draw.replace("W", ""))
-                per_gpu_power_draw[gpu_id] = float(power_draw.replace("W", ""))
+                try:
+                    power_draw_value = float(power_draw.replace("W", ""))
+                except ValueError:
+                    power_draw_value = 0.0
+                power += sm_relative_percent * power_draw_value
+                per_gpu_power_draw[gpu_id] = power_draw_value
                 # want a proportion value rather than percentage
                 per_gpu_absolute_percent_usage[gpu_id] += sm_absolute_percent / 100.0
                 per_gpu_relative_percent_usage[gpu_id] += sm_relative_percent
