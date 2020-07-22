@@ -129,7 +129,7 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
         raise ValueError("Problem with output in nvidia-smi pmon -c 10")
     out_str_pruned.insert(0, out_str_pruned.pop(position).strip())
     out_str_final = "\n".join(out_str_pruned)
-    #out_str_final = out_str_final.replace("-", "0")
+    out_str_final = out_str_final.replace("-", "0")
     out_str_final = out_str_final.replace("# ", "")
     out_str_final = re.sub('  +', "\t", out_str_final) # commands may have single spaces
     out_str_final = re.sub("\n\t", "\n", out_str_final) # remove preceding space
