@@ -39,7 +39,10 @@ from experiment_impact_tracker.utils import (
 
 SLEEP_TIME = 1
 STOP_MESSAGE = "Stop"
+
+
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+
 
 
 def read_latest_stats(log_dir):
@@ -228,6 +231,7 @@ def gather_initial_info(log_dir: str):
 
 
 class ImpactTracker(object):
+
     def __init__(self, logdir):
         self.logdir = logdir
         self._setup_logging()
@@ -319,6 +323,7 @@ class ImpactTracker(object):
         return read_latest_stats(self.logdir)
 
     def __enter__(self):
+
         """
         Allows the object to function as a context and exit.
 
@@ -343,6 +348,7 @@ class ImpactTracker(object):
         self.launch_impact_monitor()
 
     def __exit__(self):
+
         """
         Allows the object to function as a context and exit.
 
