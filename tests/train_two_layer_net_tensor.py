@@ -18,8 +18,7 @@ def train(d: str):
     print(f"ImpactTracker log dir: {temp_dir}")
 
     tracker.launch_impact_monitor()
-    # device = torch.device('cpu')
-    device = torch.device(d)  # Uncomment this to run on GPU
+    device = torch.device(d)
 
     # N is batch size; D_in is input dimension;
     # H is hidden dimension; D_out is output dimension.
