@@ -15,28 +15,32 @@ from sys import platform
 import numpy as np
 import pandas as pd
 import psutil
-import ujson as json
 from pandas.io.json import json_normalize
 
+import ujson as json
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_rapl_power
-from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
-                                                            INITIAL_INFO)
+from experiment_impact_tracker.data_info_and_router import DATA_HEADERS, INITIAL_INFO
 from experiment_impact_tracker.data_utils import *
-from experiment_impact_tracker.emissions.common import \
-    is_capable_realtime_carbon_intensity
-from experiment_impact_tracker.emissions.get_region_metrics import \
-    get_current_region_info_cached
-from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
-                                                  get_nvidia_gpu_power)
-from experiment_impact_tracker.utils import (get_timestamp, processify,
-                                             safe_file_path,
-                                             write_json_data_to_file)
+from experiment_impact_tracker.emissions.common import (
+    is_capable_realtime_carbon_intensity,
+)
+from experiment_impact_tracker.emissions.get_region_metrics import (
+    get_current_region_info_cached,
+)
+from experiment_impact_tracker.gpu.nvidia import get_gpu_info, get_nvidia_gpu_power
+from experiment_impact_tracker.utils import (
+    get_timestamp,
+    processify,
+    safe_file_path,
+    write_json_data_to_file,
+)
 
 SLEEP_TIME = 1
 STOP_MESSAGE = "Stop"
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+
 
 def read_latest_stats(log_dir):
     """
@@ -89,12 +93,14 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
             continue
 
         start = time.time()
+
         results = header["routing"]["function"](
             process_ids,
             logger=logger,
             region=initial_info["region"]["id"],
             log_dir=log_dir,
         )
+
         end = time.time()
         logger.info(
             "Datapoint {} took {} seconds".format(header["name"], (end - start))
@@ -222,7 +228,6 @@ def gather_initial_info(log_dir: str):
 
 
 class ImpactTracker(object):
-
     def __init__(self, logdir):
         self.logdir = logdir
         self._setup_logging()
@@ -313,7 +318,7 @@ class ImpactTracker(object):
 
         return read_latest_stats(self.logdir)
 
-    def __enter__ (self):
+    def __enter__(self):
         """
         Allows the object to function as a context and exit.
 
@@ -328,12 +333,16 @@ class ImpactTracker(object):
         :return:
         """
         if launched:
-            self.logger.error("Cannot enter an impact tracker after it has already been launched! Create a new "
-                              "impact tracker object, please.")
-            raise ValueError("Cannot enter an impact tracker after it has already been launched!")
+            self.logger.error(
+                "Cannot enter an impact tracker after it has already been launched! Create a new "
+                "impact tracker object, please."
+            )
+            raise ValueError(
+                "Cannot enter an impact tracker after it has already been launched!"
+            )
         self.launch_impact_monitor()
 
-    def __exit__ (self):
+    def __exit__(self):
         """
         Allows the object to function as a context and exit.
 

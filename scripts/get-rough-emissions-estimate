@@ -5,12 +5,12 @@ import os
 import sys
 from pprint import pprint
 
-import geocoder
 import numpy as np
 import pandas as pd
 
 import country_converter as coco
 import experiment_impact_tracker
+import geocoder
 from experiment_impact_tracker.emissions.get_region_metrics import (
     get_current_region_info, get_sorted_region_infos,
     get_zone_information_by_coords)

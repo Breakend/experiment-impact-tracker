@@ -4,8 +4,9 @@ import pickle
 import zipfile
 from datetime import datetime
 
-import ujson as json
 from pandas.io.json import json_normalize
+
+import ujson as json
 
 BASE_LOG_PATH = "impacttracker/"
 DATAPATH = BASE_LOG_PATH + "data.json"

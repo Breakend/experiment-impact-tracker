@@ -4,10 +4,11 @@ import time
 from collections import defaultdict
 from functools import lru_cache
 
-import arrow
 import pandas
 import requests
 from bs4 import BeautifulSoup
+
+import arrow
 
 FUEL_SOURCE_CSV = "http://www.caiso.com/outlook/SP/History/{}/fuelsource.csv"
 
