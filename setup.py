@@ -51,9 +51,10 @@ setup(
         # so we used it instead in this package
         "psutil",
         "seaborn",
+        "tqdm",
     ],
     extras_require={
-        "tests": ["pytest==3.5.1", "pytest-cov", "pytest-env", "pytest-xdist",],
+        "tests": ["pytest==3.5.1", "pytest-cov", "pytest-env", "pytest-xdist"],
         "docs": ["sphinx", "sphinx-autobuild", "sphinx-rtd-theme", "recommonmark"],
     },
     description="A toolkit for tracking energy, carbon, and compute metrics for machine learning (or any other) experiments.",

@@ -2,13 +2,13 @@ import atexit
 import os
 import time
 
-import cpuinfo
 import numpy as np
 import pandas as pd
 import psutil
 import requests
 from bs4 import BeautifulSoup
 
+import cpuinfo
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.utils import *
 
@@ -152,7 +152,7 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         # The following relationship holds: PP0 + PP1 <= PKG. DRAM is independent of the other three domains.
         # Most processors come in two packages so top level domains shold be package-1 and package-0
 
-        if domain.name == "psys": # skip SoC aggregate reporting
+        if domain.name == "psys":  # skip SoC aggregate reporting
             continue
 
         if "package" not in domain.name:
