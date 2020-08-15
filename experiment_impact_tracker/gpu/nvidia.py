@@ -22,6 +22,12 @@ _timer = getattr(time, "monotonic", time.time)
 
 
 def is_nvidia_compatible(*args, **kwargs):
+    """ Check if this system supports nvidia tools required
+
+    :param args:
+    :param kwargs:
+    :return:
+    """
     from shutil import which
 
     if which("nvidia-smi") is None:
@@ -38,6 +44,12 @@ def is_nvidia_compatible(*args, **kwargs):
 
 
 def get_gpu_info(*args, **kwargs):
+    """ Gathers general hardware information about an nvidia GPU
+
+    :param args:
+    :param kwargs:
+    :return:
+    """
     p = Popen(["nvidia-smi", "-q", "-x"], stdout=PIPE)
     outs, errors = p.communicate()
     xml = fromstring(outs)
