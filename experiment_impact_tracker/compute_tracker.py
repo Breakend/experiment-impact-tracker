@@ -20,7 +20,7 @@ from pandas.io.json import json_normalize
 
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
-from experiment_impact_tracker.cpu.intel import get_rapl_power
+from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
 from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
                                                             INITIAL_INFO)
 from experiment_impact_tracker.data_utils import *
@@ -35,9 +35,19 @@ from experiment_impact_tracker.utils import (get_timestamp, processify,
                                              write_json_data_to_file)
 
 SLEEP_TIME = 1
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
+STOP_MESSAGE = "Stop"
+
+
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
+
 
 def read_latest_stats(log_dir):
+    """
+    Reads the latest last line of the jsonl file
+
+    :param log_dir: log directory to read from
+    :return: latest data
+    """
     log_path = os.path.join(log_dir, DATAPATH)
 
     try:
@@ -52,6 +62,14 @@ def read_latest_stats(log_dir):
 
 
 def _sample_and_log_power(log_dir, initial_info, logger=None):
+    """
+    Iterates over compatible metrics and logs the relevant information.
+
+    :param log_dir: The log directory to use
+    :param initial_info: Any initial information that was gathered
+    :param logger: A logger to use
+    :return: collected data
+    """
     current_process = psutil.Process(os.getppid())
     process_ids = [current_process.pid] + [
         child.pid for child in current_process.children(recursive=True)
@@ -74,12 +92,14 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
             continue
 
         start = time.time()
+
         results = header["routing"]["function"](
             process_ids,
             logger=logger,
             region=initial_info["region"]["id"],
             log_dir=log_dir,
         )
+
         end = time.time()
         logger.info(
             "Datapoint {} took {} seconds".format(header["name"], (end - start))
@@ -104,12 +124,21 @@ def _sample_and_log_power(log_dir, initial_info, logger=None):
 
 @processify
 def launch_power_monitor(queue, log_dir, initial_info, logger=None):
+    """
+    Launches a separate process which monitors metrics
+
+    :param queue: A message queue to pass messages back and forth to the thread
+    :param log_dir: The log directory to use
+    :param initial_info: Any initial information that was gathered before the thread was launched.
+    :param logger: A logger to use
+    :return:
+    """
     logger.info("Starting process to monitor power")
     while True:
         try:
             message = queue.get(block=False)
             if isinstance(message, str):
-                if message == "Stop":
+                if message == STOP_MESSAGE:
                     return
             else:
                 queue.put(message)
@@ -127,6 +156,12 @@ def launch_power_monitor(queue, log_dir, initial_info, logger=None):
 
 
 def _get_compatible_data_headers(region=None):
+    """
+    Given all the data headers check for each one if it is compatible with the current system.
+
+    :param region: The region we're in, required for some checks
+    :return: which headers are compatible
+    """
     compatible_headers = []
 
     for header in DATA_HEADERS:
@@ -142,15 +177,29 @@ def _get_compatible_data_headers(region=None):
 
 
 def _validate_compatabilities(compatabilities, *args, **kwargs):
+    """
+    Given a list of compatability functions, run the checks
+
+    :param compatabilities: a list of compatability functions to call
+    :param args: any arguments to pass to compatability functions
+    :param kwargs:  any arguments to pass to compatability functions
+    :return: True if everything compatible, False otherwise
+    """
     for compatability_fn in compatabilities:
         if not compatability_fn(*args, **kwargs):
             return False
     return True
 
 
-def gather_initial_info(log_dir):
-    # TODO: log one time info: CPU/GPU info, version of this package, region, datetime for start of experiment, CO2 estimate data.
-    # this will be used to build a latex table later.
+def gather_initial_info(log_dir: str):
+    """ Log one time info
+
+    For example, CPU/GPU info, version of this package, region, datetime for start of experiment,
+    CO2 estimate data.
+
+    :param log_dir: the log directory to write to
+    :return: gathered information
+    """
 
     info_path = safe_file_path(os.path.join(log_dir, INFOPATH))
 
@@ -184,8 +233,14 @@ class ImpactTracker(object):
         self.logger.info("Gathering system info for reproducibility...")
         self.initial_info = gather_initial_info(logdir)
         self.logger.info("Done initial setup and information gathering...")
+        self.launched = False
 
     def _setup_logging(self):
+        """
+        Private function to set up logging handlers
+
+        :return:
+        """
         # Create a custom logger
         logger = logging.getLogger(
             "experiment_impact_tracker.compute_tracker.ImpactTracker"
@@ -215,6 +270,11 @@ class ImpactTracker(object):
         self.logger = logger
 
     def launch_impact_monitor(self):
+        """
+        Launches the separate thread which starts polling for metrics
+
+        :return:
+        """
         try:
             self.p, self.queue = launch_power_monitor(
                 self.logdir, self.initial_info, self.logger
@@ -225,6 +285,7 @@ class ImpactTracker(object):
                 log_final_info(self.logdir)
 
             atexit.register(_terminate_monitor_and_log_final_info, self.p)
+            self.launched = True
         except:
             ex_type, ex_value, tb = sys.exc_info()
             self.logger.error(
@@ -234,6 +295,12 @@ class ImpactTracker(object):
             raise
 
     def get_latest_info_and_check_for_errors(self):
+        """
+        Reads the latest information from the log file and checks for errors that may have occured in the separate
+        process
+
+        :return: latest stats
+        """
         try:
             message = self.queue.get(block=False)
             if isinstance(message, tuple):
@@ -247,6 +314,59 @@ class ImpactTracker(object):
         except EmptyQueueException:
             # Nothing in the message queue
             pass
-        # TODO: make thread safe read/writes via multiprocessing lock.
-        # There might be a case where we try to read a file that is currently being written to? possibly
+
         return read_latest_stats(self.logdir)
+
+    def __enter__(self):
+
+        """
+        Allows the object to function as a context and exit.
+
+        For example,
+
+        with ImpactTracker("./log1"):
+            do_thing1()
+
+        with ImpactTracker("./log2"):
+            do_thing2()
+
+        :return:
+        """
+        if self.launched:
+            self.logger.error(
+                "Cannot enter an impact tracker after it has already been launched! Create a new "
+                "impact tracker object, please."
+            )
+            raise ValueError(
+                "Cannot enter an impact tracker after it has already been launched!"
+            )
+        self.launch_impact_monitor()
+
+    def __exit__(self, exc_type, exc_value, tb):
+        """
+        Allows the object to function as a context and exit.
+
+        For example,
+
+        with ImpactTracker("./log1"):
+            do_thing1()
+
+        with ImpactTracker("./log2"):
+            do_thing2()
+
+        :return:
+        """
+        if exc_type is not None:
+            return False
+        # Code to start a new transaction
+        self.stop()
+
+    def stop(self):
+        """
+        Stops the monitoring thread
+
+        :return:
+        """
+        self.queue.put(STOP_MESSAGE)
+        self.p.terminate()
+        log_final_info(self.logdir)

@@ -100,7 +100,6 @@ def _get_cpu_hours_from_per_process_data(json_array):
 def gather_additional_info(info, logdir):
     df, json_array = load_data_into_frame(logdir)
     cpu_seconds = _get_cpu_hours_from_per_process_data(json_array)
-    num_gpus = len(info["gpu_info"])
     exp_len = datetime.timestamp(info["experiment_end"]) - datetime.timestamp(
         info["experiment_start"]
     )
@@ -122,22 +121,32 @@ def gather_additional_info(info, logdir):
     # elementwise multiplication and sum
     time_differences_in_hours = time_differences / 3600.0
     power_draw_rapl_kw = df["rapl_estimated_attributable_power_draw"] / 1000.0
-    nvidia_power_draw_kw = df["nvidia_estimated_attributable_power_draw"] / 1000.0
-    nvidia_power_draw_kw.loc[len(nvidia_power_draw_kw)] = nvidia_power_draw_kw.loc[
-        len(nvidia_power_draw_kw) - 1
-    ]
     power_draw_rapl_kw.loc[len(power_draw_rapl_kw)] = power_draw_rapl_kw.loc[
         len(power_draw_rapl_kw) - 1
     ]
-    gpu_absolute_util = df["average_gpu_estimated_utilization_absolute"]
-    gpu_absolute_util.loc[len(gpu_absolute_util)] = gpu_absolute_util.loc[
-        len(gpu_absolute_util) - 1
-    ]
-    # elementwise multiplication and sum
-    kw_hr_nvidia = np.multiply(time_differences_in_hours, nvidia_power_draw_kw)
+    has_gpu = False
+    if "gpu_info" in info.keys():
+        has_gpu = True
+        num_gpus = len(info["gpu_info"])
+        nvidia_power_draw_kw = df["nvidia_estimated_attributable_power_draw"] / 1000.0
+        nvidia_power_draw_kw.loc[len(nvidia_power_draw_kw)] = nvidia_power_draw_kw.loc[
+            len(nvidia_power_draw_kw) - 1
+        ]
+        gpu_absolute_util = df["average_gpu_estimated_utilization_absolute"]
+        gpu_absolute_util.loc[len(gpu_absolute_util)] = gpu_absolute_util.loc[
+            len(gpu_absolute_util) - 1
+        ]
+
+        # elementwise multiplication and sum
+        kw_hr_nvidia = np.multiply(time_differences_in_hours, nvidia_power_draw_kw)
+
     kw_hr_rapl = np.multiply(time_differences_in_hours, power_draw_rapl_kw)
 
-    total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
+    if has_gpu:
+        total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
+    else:
+        total_power_per_timestep = PUE * (kw_hr_rapl)
+
     total_power = total_power_per_timestep.sum()
     realtime_carbon = None
     if "realtime_carbon_intensity" in df:
@@ -169,22 +178,23 @@ def gather_additional_info(info, logdir):
         )
 
     estimated_carbon_impact_kg = estimated_carbon_impact_grams / 1000.0
-    # GPU-hours percent utilization * length of time utilized (assumes absolute utliziation)
-    gpu_hours = (
-        np.multiply(time_differences_in_hours, gpu_absolute_util).sum() * num_gpus
-    )
 
     cpu_hours = cpu_seconds / 3600.0
 
     data = {
         "cpu_hours": cpu_hours,
-        "gpu_hours": gpu_hours,
         "estimated_carbon_impact_kg": estimated_carbon_impact_kg,
         "total_power": total_power,
-        "kw_hr_gpu": kw_hr_nvidia.sum(),
         "kw_hr_cpu": kw_hr_rapl.sum(),
         "exp_len_hours": exp_len_hours,
     }
+
+    if has_gpu:
+        # GPU-hours percent utilization * length of time utilized (assumes absolute utliziation)
+        gpu_hours = (
+            np.multiply(time_differences_in_hours, gpu_absolute_util).sum() * num_gpus
+        )
+        data.update({"gpu_hours": gpu_hours, "kw_hr_gpu": kw_hr_nvidia.sum()})
 
     if realtime_carbon is not None:
         data["average_realtime_carbon_intensity"] = realtime_carbon.mean()

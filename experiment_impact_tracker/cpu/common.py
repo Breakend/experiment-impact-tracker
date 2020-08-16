@@ -32,7 +32,7 @@ def get_cpu_freq(*args, **kwargs):
     """
     try:
         return [x._asdict() for x in psutil.cpu_freq(percpu=True)]
-    except NotImplementedError: # psutil.cpu_freq() fails on some machines
+    except NotImplementedError:  # psutil.cpu_freq() fails on some machines
         return []
 
 

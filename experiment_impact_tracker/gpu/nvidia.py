@@ -1,11 +1,11 @@
 import atexit
+import re
 import subprocess
 import time
 from collections import OrderedDict
 from io import StringIO
 from subprocess import PIPE, Popen
 from xml.etree.ElementTree import fromstring
-import re
 
 import cpuinfo
 import numpy as np
@@ -22,6 +22,12 @@ _timer = getattr(time, "monotonic", time.time)
 
 
 def is_nvidia_compatible(*args, **kwargs):
+    """ Check if this system supports nvidia tools required
+
+    :param args:
+    :param kwargs:
+    :return:
+    """
     from shutil import which
 
     if which("nvidia-smi") is None:
@@ -38,6 +44,12 @@ def is_nvidia_compatible(*args, **kwargs):
 
 
 def get_gpu_info(*args, **kwargs):
+    """ Gathers general hardware information about an nvidia GPU
+
+    :param args:
+    :param kwargs:
+    :return:
+    """
     p = Popen(["nvidia-smi", "-q", "-x"], stdout=PIPE)
     outs, errors = p.communicate()
     xml = fromstring(outs)
@@ -123,17 +135,19 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
     position = -1
 
     for i, x in enumerate(out_str_pruned):
-        if re.match(r'#.* gpu ', x):
+        if re.match(r"#.* gpu ", x):
             position = i
     if position == -1:
         raise ValueError("Problem with output in nvidia-smi pmon -c 10")
     out_str_pruned.insert(0, out_str_pruned.pop(position).strip())
     out_str_final = "\n".join(out_str_pruned)
-    #out_str_final = out_str_final.replace("-", "0")
+    out_str_final = out_str_final.replace("-", "0")
     out_str_final = out_str_final.replace("# ", "")
-    out_str_final = re.sub('  +', "\t", out_str_final) # commands may have single spaces
-    out_str_final = re.sub("\n\t", "\n", out_str_final) # remove preceding space
-    out_str_final = re.sub("\s+\n", "\n", out_str_final) # else pd will mis-align
+    out_str_final = re.sub(
+        "  +", "\t", out_str_final
+    )  # commands may have single spaces
+    out_str_final = re.sub("\n\t", "\n", out_str_final)  # remove preceding space
+    out_str_final = re.sub("\s+\n", "\n", out_str_final)  # else pd will mis-align
     out_str_final = out_str_final.strip()
     df = pd.read_csv(StringIO(out_str_final), engine="python", delimiter="\t")
     process_percentage_used_gpu = df.groupby(["gpu", "pid"]).mean().reset_index()
