@@ -89,4 +89,5 @@ def test_many_contexts():
         with ImpactTracker(fname):
             _helper_function()
 
-    DataInterface(files)
+    di = DataInterface(files)
+    assert di.total_power > 0 and di.kg_carbon > 0
