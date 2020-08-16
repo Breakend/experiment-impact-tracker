@@ -11,8 +11,8 @@ from multiprocessing import Process, Queue
 import numpy as np
 import pandas as pd
 import psutil
-
 import ujson
+
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.data_utils import load_data_into_frame
 from experiment_impact_tracker.emissions.constants import PUE
@@ -179,7 +179,6 @@ def gather_additional_info(info, logdir):
 
     estimated_carbon_impact_kg = estimated_carbon_impact_grams / 1000.0
 
-
     cpu_hours = cpu_seconds / 3600.0
 
     data = {
@@ -193,7 +192,7 @@ def gather_additional_info(info, logdir):
     if has_gpu:
         # GPU-hours percent utilization * length of time utilized (assumes absolute utliziation)
         gpu_hours = (
-                np.multiply(time_differences_in_hours, gpu_absolute_util).sum() * num_gpus
+            np.multiply(time_differences_in_hours, gpu_absolute_util).sum() * num_gpus
         )
         data.update({"gpu_hours": gpu_hours, "kw_hr_gpu": kw_hr_nvidia.sum()})
 

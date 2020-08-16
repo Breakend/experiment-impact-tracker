@@ -7,13 +7,13 @@ from io import StringIO
 from subprocess import PIPE, Popen
 from xml.etree.ElementTree import fromstring
 
+import cpuinfo
 import numpy as np
 import pandas as pd
 import psutil
 import requests
 from bs4 import BeautifulSoup
 
-import cpuinfo
 from experiment_impact_tracker.utils import *
 
 from .exceptions import GPUAttributeAssertionError

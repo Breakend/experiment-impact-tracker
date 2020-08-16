@@ -1,20 +1,23 @@
 """
 Modified from https://github.com/mozilla/energia/blob/8bfc8e2cf774b702ea1085a164403356cc10086b/wrappers/PowerGadget.py
 """
-import sys
-import platform
-import shutil
-import os
 import multiprocessing
-import pandas
+import os
+import platform
 import re
+import shutil
+import sys
 import tempfile
+
+import pandas
 
 sys.path.append("..")
 
-from pandas import DataFrame
-import subprocess, shlex
+import shlex
+import subprocess
+
 import pandas as pd
+from pandas import DataFrame
 
 get_long_path = lambda x: x
 try:
@@ -40,7 +43,14 @@ class PowerGadget(object):
     _lin_exec = "power_gadget"
 
     def __init__(self, duration=2, resolution=100):
-        self._fields = ["Processor Joules", "Processor Watt", "IA Joules", "IA Watt", "GT Joules", "GT Watt"]
+        self._fields = [
+            "Processor Joules",
+            "Processor Watt",
+            "IA Joules",
+            "IA Watt",
+            "GT Joules",
+            "GT Watt",
+        ]
         self._system = platform.system()
         self.duration = duration
         self.resolution = resolution
@@ -77,14 +87,23 @@ class PowerGadget(object):
         duration = self.duration
 
         if self._system == "Darwin":
-            os.system('"{}" -resolution {} -duration {} -file {} > /dev/null'.format(
-                self._tool, str(resolution), str(duration), self._logfile))
+            os.system(
+                '"{}" -resolution {} -duration {} -file {} > /dev/null'.format(
+                    self._tool, str(resolution), str(duration), self._logfile
+                )
+            )
         elif self._system == "Linux":
-            os.system("{} -e {} -d {} > {}".format(self._tool, str(resolution),
-                                                   str(duration), self._logfile))
+            os.system(
+                "{} -e {} -d {} > {}".format(
+                    self._tool, str(resolution), str(duration), self._logfile
+                )
+            )
         else:
-            os.system("{} -resolution {} -duration {} -file {} > NUL 2>&1".format(
-                self._tool, str(resolution), str(duration), self._logfile))
+            os.system(
+                "{} -resolution {} -duration {} -file {} > NUL 2>&1".format(
+                    self._tool, str(resolution), str(duration), self._logfile
+                )
+            )
 
     def join(self):
         self._log_process.join()
@@ -110,7 +129,7 @@ class PowerGadget(object):
         except FileNotFoundError:
             raise Exception("PowerLog failed to generate a valid logfile")
 
-        assert (summary['Processor Power_0(Watt)'] > 0)
+        assert summary["Processor Power_0(Watt)"] > 0
 
         shutil.rmtree(os.path.split(self._logfile)[0])
         return summary

@@ -1,7 +1,10 @@
 # Code in file tensor/two_layer_net_tensor.py
-import torch
 import time
-from experiment_impact_tracker.cpu.powercap import is_powercap_compatible, PowerGadget
+
+import torch
+
+from experiment_impact_tracker.cpu.powercap import PowerGadget, is_powercap_compatible
+
 
 def _helper_function():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -41,6 +44,7 @@ def _helper_function():
         # Update weights using gradient descent
         w1 -= learning_rate * grad_w1
         w2 -= learning_rate * grad_w2
+
 
 def test_powercap():
     if is_powercap_compatible():

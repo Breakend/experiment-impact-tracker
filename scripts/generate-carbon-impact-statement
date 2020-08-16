@@ -16,10 +16,10 @@ from shutil import copyfile
 import numpy as np
 import pandas as pd
 import scipy
+from deepdiff import DeepDiff  # For Deep Difference of 2 objects
 from jinja2 import Environment, FileSystemLoader
 
 import experiment_impact_tracker
-from deepdiff import DeepDiff  # For Deep Difference of 2 objects
 from experiment_impact_tracker.create_graph_appendix import (
     create_graphs, create_scatterplot_from_df)
 from experiment_impact_tracker.data_utils import (load_data_into_frame,
@@ -37,6 +37,7 @@ from experiment_impact_tracker.utils import gather_additional_info
 pd.set_option('display.max_colwidth', -1)
 
 from experiment_impact_tracker.data_interface import DataInterface
+
 
 def main(arguments):
 

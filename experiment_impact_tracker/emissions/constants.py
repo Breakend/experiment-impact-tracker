@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-
 import ujson as json
 from progiter import ProgIter
 from shapely.geometry import shape

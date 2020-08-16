@@ -1,8 +1,7 @@
 from sys import platform
 
-import psutil
-
 import cpuinfo
+import psutil
 
 from .exceptions import CPUAttributeAssertionError
 

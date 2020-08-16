@@ -1,9 +1,8 @@
-import numpy as np
-from scipy.stats import mannwhitneyu, median_test, rankdata, ttest_ind
-
 import bootstrapped.bootstrap as bs
 import bootstrapped.compare_functions as bs_compare
 import bootstrapped.stats_functions as bs_stats
+import numpy as np
+from scipy.stats import mannwhitneyu, median_test, rankdata, ttest_ind
 
 tests_list = [
     "t-test",

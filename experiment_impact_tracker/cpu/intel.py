@@ -2,18 +2,17 @@ import atexit
 import os
 import time
 
+import cpuinfo
 import numpy as np
 import pandas as pd
 import psutil
 import requests
 from bs4 import BeautifulSoup
 
-import cpuinfo
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.utils import *
 
-from . import rapl
-from .import powercap
+from . import powercap, rapl
 
 
 def get_and_cache_cpu_max_tdp_from_intel():
@@ -66,8 +65,10 @@ def get_and_cache_cpu_max_tdp_from_intel():
 
 _timer = getattr(time, "monotonic", time.time)
 
+
 def is_intel_compatible(*args, **kwargs):
     return powercap.is_powercap_compatible() or rapl._is_rapl_compatible()
+
 
 def get_intel_power(pid_list, logger=None, **kwargs):
     """ Gathers CPU information from RAPL.
@@ -263,20 +264,18 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
         )
 
     if uss_avail:
-        abs_mem_usage =  np.sum(
-                [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
-            )
+        abs_mem_usage = np.sum(
+            [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
+        )
 
         abs_mem_percent_usage = np.sum(
-                [
-                    float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
-                    for x in mem_info_per_process.values()
-                ]
-            )
-    else:
-        abs_mem_usage = np.sum(
-            [float(x["rss"]) for x in mem_info_per_process.values()]
+            [
+                float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
+                for x in mem_info_per_process.values()
+            ]
         )
+    else:
+        abs_mem_usage = np.sum([float(x["rss"]) for x in mem_info_per_process.values()])
 
         abs_mem_percent_usage = np.sum(
             [
@@ -340,7 +339,6 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
                     "Process with pid {} used to be part of this process chain, but was shut down. Skipping."
                 )
             continue
-
 
     # Get initial times and cpu info
     zombies = []
@@ -512,20 +510,18 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         )
 
     if uss_avail:
-        abs_mem_usage =  np.sum(
-                [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
-            )
+        abs_mem_usage = np.sum(
+            [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
+        )
 
         abs_mem_percent_usage = np.sum(
-                [
-                    float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
-                    for x in mem_info_per_process.values()
-                ]
-            )
-    else:
-        abs_mem_usage = np.sum(
-            [float(x["rss"]) for x in mem_info_per_process.values()]
+            [
+                float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
+                for x in mem_info_per_process.values()
+            ]
         )
+    else:
+        abs_mem_usage = np.sum([float(x["rss"]) for x in mem_info_per_process.values()])
 
         abs_mem_percent_usage = np.sum(
             [

@@ -4,10 +4,11 @@ import argparse
 import sys
 from pprint import pprint
 
+from geopy.geocoders import Nominatim
+
 from experiment_impact_tracker.emissions.get_region_metrics import (
     get_current_region_info, get_sorted_region_infos,
     get_zone_information_by_coords)
-from geopy.geocoders import Nominatim
 
 
 def cmdline_args():

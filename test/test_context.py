@@ -1,8 +1,11 @@
 # Code in file tensor/two_layer_net_tensor.py
-import torch
 import tempfile
+
+import torch
+
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 from experiment_impact_tracker.data_interface import DataInterface
+
 
 def _helper_function():
 
@@ -43,6 +46,7 @@ def _helper_function():
         w1 -= learning_rate * grad_w1
         w2 -= learning_rate * grad_w2
 
+
 def test_two_contexts():
     fname = tempfile.mkdtemp()
     fname2 = tempfile.mkdtemp()
@@ -58,5 +62,11 @@ def test_two_contexts():
 
     data_interface_both = DataInterface([fname, fname2])
 
-    assert data_interface1.kg_carbon + data_interface2.kg_carbon == data_interface_both.kg_carbon
-    assert data_interface1.total_power + data_interface2.total_power == data_interface_both.total_power
+    assert (
+        data_interface1.kg_carbon + data_interface2.kg_carbon
+        == data_interface_both.kg_carbon
+    )
+    assert (
+        data_interface1.total_power + data_interface2.total_power
+        == data_interface_both.total_power
+    )
