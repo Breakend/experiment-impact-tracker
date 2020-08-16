@@ -106,5 +106,5 @@ venv.bak/
 # pytest
 .pytest_cache/
 
-# pycharm
+#pycharm
 .idea
