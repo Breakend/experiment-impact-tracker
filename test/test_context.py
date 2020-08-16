@@ -23,7 +23,7 @@ def _helper_function():
     w2 = torch.randn(H, D_out, device=device)
 
     learning_rate = 1e-6
-    for t in range(100):
+    for t in range(50):
         # Forward pass: compute predicted y
         h = x.mm(w1)
         h_relu = h.clamp(min=0)
@@ -70,3 +70,23 @@ def test_two_contexts():
         data_interface1.total_power + data_interface2.total_power
         == data_interface_both.total_power
     )
+
+
+def test_many_contexts():
+    """
+    Meant to check if we run into any OSError for too many file handles open at once
+
+    See https://github.com/Breakend/experiment-impact-tracker/issues/5
+
+    :return:
+    """
+    files = []
+
+    for i in range(10):
+        fname = tempfile.mkdtemp()
+        files.append(fname)
+
+        with ImpactTracker(fname):
+            _helper_function()
+
+    DataInterface(files)
