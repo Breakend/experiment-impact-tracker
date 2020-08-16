@@ -4,11 +4,8 @@ import experiment_impact_tracker
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import (
     get_cpu_count_adjusted_load_avg, get_cpu_freq, get_my_cpu_info)
-from experiment_impact_tracker.cpu.intel import get_rapl_power
-
-    get_cpu_count_adjusted_load_avg, get_cpu_freq, get_my_cpu_info)
-from experiment_impact_tracker.cpu.intel import (get_intel_power,
-                                                 is_intel_compatible)
+from experiment_impact_tracker.cpu.intel import (
+    get_intel_power, get_rapl_power, is_intel_compatible)
 from experiment_impact_tracker.disk.common import measure_disk_speed_at_dir
 from experiment_impact_tracker.emissions.common import (
     get_realtime_carbon, is_capable_realtime_carbon_intensity)
