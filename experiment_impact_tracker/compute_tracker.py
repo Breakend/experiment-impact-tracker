@@ -22,6 +22,10 @@ from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_rapl_power
 from experiment_impact_tracker.data_info_and_router import DATA_HEADERS, INITIAL_INFO
+from experiment_impact_tracker.cpu.intel import get_intel_power
+from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
+                                                            INITIAL_INFO)
+
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.emissions.common import (
     is_capable_realtime_carbon_intensity,
@@ -337,18 +341,13 @@ class ImpactTracker(object):
 
         :return:
         """
-        if launched:
-            self.logger.error(
-                "Cannot enter an impact tracker after it has already been launched! Create a new "
-                "impact tracker object, please."
-            )
-            raise ValueError(
-                "Cannot enter an impact tracker after it has already been launched!"
-            )
+        if self.launched:
+            self.logger.error("Cannot enter an impact tracker after it has already been launched! Create a new "
+                              "impact tracker object, please.")
+            raise ValueError("Cannot enter an impact tracker after it has already been launched!")
         self.launch_impact_monitor()
 
-    def __exit__(self):
-
+    def __exit__(self, exc_type, exc_value, tb):
         """
         Allows the object to function as a context and exit.
 
@@ -362,6 +361,8 @@ class ImpactTracker(object):
 
         :return:
         """
+        if exc_type is not None:
+            return False
         # Code to start a new transaction
         self.stop()
 
@@ -372,3 +373,5 @@ class ImpactTracker(object):
         :return:
         """
         self.queue.put(STOP_MESSAGE)
+        self.p.terminate()
+        log_final_info(self.logdir)

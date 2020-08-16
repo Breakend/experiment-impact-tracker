@@ -41,8 +41,21 @@ This will launch a separate python process that will gather compute/energy/carbo
  read the latest info from the log file and check for any errors that might've occurred in the tracking process. 
  If you have a better idea on how to handle exceptions in the tracking thread please open an issue or submit a pull request!**
 
-```python3
+```python
 info = tracker.get_latest_info_and_check_for_errors()
+```
+
+Alternatively, you can use context management!
+
+```python
+experiment1 = tempfile.mkdtemp()
+experiment2 = tempfile.mkdtemp()
+
+with ImpactTracker(experiment1):
+    do_something()
+
+with ImpactTracker(experiment2):
+    do_something_else()
 ```
 
 To kick off our simple experiment, run ``python my_experiment.py``. You will see our 
@@ -60,6 +73,19 @@ $ tree
     └── info.pkl
 ```
 
+You can then access the information via the DataInterface:
+
+```python
+from experiment_impact_tracker.data_interface import DataInterface
+
+data_interface1 = DataInterface([experiment1_logdir])
+data_interface2 = DataInterface([experiment2_logdir])
+
+data_interface_both = DataInterface([experiment1_logdir, experiment2_logdir])
+
+assert data_interface1.kg_carbon + data_interface2.kg_carbon == data_interface_both.kg_carbon
+assert data_interface1.total_power + data_interface2.total_power == data_interface_both.total_power
+```
 
 ### Generating an HTML appendix
 
@@ -171,9 +197,24 @@ sphinx-build -b html docsrc docs
 
 ## Compatible Systems
 
-Right now, we're only compatible with Linux systems running NVIDIA GPU's and Intel processors (which support RAPL). 
+Right now, we're only compatible with Linux and Mac OS X systems running NVIDIA GPU's and Intel processors (which
+ support RAPL or PowerCap). 
 
 If you'd like support for your use-case or encounter missing/broken functionality on your system specs, please open an issue or better yet submit a pull request! It's almost impossible to cover every combination on our own!
+
+### Mac OS X Suppport
+
+Currently, we support only CPU and memory-related metrics on Mac OS X for Intel-based CPUs. However, these require the
+ Intel PowerCap driver and the Intel PowerGadget tool. The easiest way to install this is:
+ 
+```bash
+$ brew cask install intel-power-gadget
+$ which "/Applications/Intel Power Gadget/PowerLog"
+```
+
+You can also see here: https://software.intel.com/content/www/us/en/develop/articles/intel-power-gadget.html
+
+This will install a tool called PowerLog that we rely on to get power measurements on Mac OS X systems.
 
 ### Tested Successfully On
 
@@ -184,9 +225,11 @@ GPUs:
 CPUs:
 + Intel(R) Xeon(R) CPU E5-2640 v3 @ 2.60GHz
 + Intel(R) Xeon(R) CPU E5-2620 v3 @ 2.40GHz
++ 2.7 GHz Quad-Core Intel Core i7
 
 OS:
 + Ubuntu 16.04.5 LTS
++ Mac OS X 10.15.6 
 
 ## Citation
 
