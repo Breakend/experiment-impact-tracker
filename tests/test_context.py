@@ -5,7 +5,7 @@ import torch
 
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 from experiment_impact_tracker.data_interface import DataInterface
-
+from experiment_impact_tracker.cpu.intel import is_intel_compatible
 
 def _helper_function():
 
@@ -48,6 +48,10 @@ def _helper_function():
 
 
 def test_two_contexts():
+    if not is_intel_compatible():
+        # For now, we have a requirement that at least the CPU info be recorded
+        # TODO: in the future we want to be able to only record GPU or whatever info is available
+        return
     fname = tempfile.mkdtemp()
     fname2 = tempfile.mkdtemp()
 
@@ -80,6 +84,10 @@ def test_many_contexts():
 
     :return:
     """
+    if not is_intel_compatible():
+        # For now, we have a requirement that at least the CPU info be recorded
+        # TODO: in the future we want to be able to only record GPU or whatever info is available
+        return
     files = []
 
     for i in range(10):
