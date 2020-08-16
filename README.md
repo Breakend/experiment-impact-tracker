@@ -231,6 +231,14 @@ OS:
 + Ubuntu 16.04.5 LTS
 + Mac OS X 10.15.6 
 
+## Testing
+
+To test, run:
+
+```bash
+pytest 
+```
+
 ## Citation
 
 If you use this work, please cite our paper:
