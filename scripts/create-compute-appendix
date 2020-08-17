@@ -7,31 +7,24 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
 from importlib import import_module
-from itertools import combinations
-from pprint import pprint
 from shutil import copyfile
 
 import numpy as np
 import pandas as pd
 import scipy
-from deepdiff import DeepDiff  # For Deep Difference of 2 objects
 from jinja2 import Environment, FileSystemLoader
 
 import experiment_impact_tracker
 from experiment_impact_tracker.create_graph_appendix import (
     create_graphs, create_scatterplot_from_df)
-from experiment_impact_tracker.data_utils import (load_data_into_frame,
-                                                  load_initial_info,
+from experiment_impact_tracker.data_utils import (load_initial_info,
                                                   zip_data_and_info)
 from experiment_impact_tracker.emissions.common import \
     get_realtime_carbon_source
 from experiment_impact_tracker.emissions.constants import PUE
 from experiment_impact_tracker.emissions.get_region_metrics import \
     get_zone_name_by_id
-from experiment_impact_tracker.stats import (get_average_treatment_effect,
-                                             run_test)
 from experiment_impact_tracker.utils import gather_additional_info
 
 pd.set_option('display.max_colwidth', -1)
@@ -43,11 +36,14 @@ def _gather_executive_summary(aggregated_info, executive_summary_variables, expe
         if not all_points:
             data = [exp_name]
             for variable in executive_summary_variables:
-                values = aggregated_info[exp_name][variable]
-                values_mean = np.mean(values)
-                values_stdder = scipy.stats.sem(values)
-                data.append(
-                    "{:.3f} +/- {:.2f}".format(values_mean, values_stdder))
+                if variable in aggregated_info[exp_name]:
+                    values = aggregated_info[exp_name][variable]
+                    values_mean = np.mean(values)
+                    values_stdder = scipy.stats.sem(values)
+                    data.append(
+                        "{:.3f} +/- {:.2f}".format(values_mean, values_stdder))
+                else:
+                    data.append("NAN")
             executive_summary.append(data)
         else:
             for j in range(len(aggregated_info[exp_name][executive_summary_variables[0]])):
@@ -214,13 +210,17 @@ def _aggregated_data_for_filterset(output_dir,
                 zip_data_and_info(x, zip_file_name)
 
                 # {k: [v] for k, v in info["gpu_info"].items()})
-                gpu_data_frame = pd.DataFrame.from_dict(info["gpu_info"])
-                gpu_infos_all[experiment_set_names[exp_set]].append(
-                    gpu_data_frame)
-                cpu_data_frame = pd.DataFrame.from_dict(
-                    {k: [v] for k, v in info["cpu_info"].items()})
-                cpu_infos_all[experiment_set_names[exp_set]].append(
-                    cpu_data_frame)
+                if "gpu_info" in info:
+                    import pdb;pdb.set_trace()
+                    gpu_data_frame = pd.DataFrame.from_dict(info["gpu_info"])
+                    gpu_infos_all[experiment_set_names[exp_set]].append(
+                        gpu_data_frame)
+                if "cpu_info" in info:
+                    cpu_data_frame = pd.DataFrame.from_dict(
+                        {k: [v] for k, v in info["cpu_info"].items()})
+                    cpu_infos_all[experiment_set_names[exp_set]].append(
+                        cpu_data_frame)
+
                 carbon_infos_all[experiment_set_names[exp_set]].append(
                     _get_carbon_infos(info, extracted_info))
                 package_infos_all[experiment_set_names[exp_set]].append(
@@ -281,20 +281,26 @@ def _create_leaf_page(output_directory, all_infos, exp_set_name, description, ex
             graph_path, html_output_dir) for graph_path in graph_paths_all[exp_set_name][i]]
         relative_data_zip_paths = os.path.relpath(
             data_zip_paths_all[exp_set_name][i], html_output_dir)
-        output = template.render(
-            exp_set_names_titles=[(_format_setname(experiment_set_names[exp_set]), experiment_set_names[exp_set])
-                                  for exp_set in range(len(experiment_set_filters))],
-            exps=list(
-                range(len(list(aggregated_info[exp_set_name].values())[0]))),
-            cpu_info=cpu_infos_all[exp_set_name][i].T,
-            gpu_info=gpu_infos_all[exp_set_name][i].T,
-            carbon_info=carbon_infos_all[exp_set_name][i].T,
-            package=pd.DataFrame.from_dict(package_infos_all[exp_set_name][i]),
-            stats=pd.DataFrame(summary_info),
-            graph_paths=relative_graph_paths,
-            data_download_path=relative_data_zip_paths,
-            title=exp_set_name,
-            relative_base_dir=os.path.relpath(base_dir, output_directory))
+
+        template_args = {}
+        if gpu_infos_all and gpu_infos_all[exp_set_name] and gpu_infos_all[exp_set_name][i]:
+            template_args["gpu_info"] = gpu_infos_all[exp_set_name][i].T
+
+        template_args["exp_set_names_titles"] = [(_format_setname(experiment_set_names[exp_set]), experiment_set_names[exp_set])
+                                  for exp_set in range(len(experiment_set_filters))]
+        template_args["exps"] = list(
+                range(len(list(aggregated_info[exp_set_name].values())[0])))
+        template_args["cpu_info"] = cpu_infos_all[exp_set_name][i].T
+        template_args["carbon_info"] = carbon_infos_all[exp_set_name][i].T
+        template_args["package"] = pd.DataFrame.from_dict(package_infos_all[exp_set_name][i])
+        template_args["stats"] = pd.DataFrame(summary_info)
+        template_args["graph_paths"] = relative_graph_paths
+        template_args["data_download_path"] = relative_data_zip_paths
+        template_args["title"] = exp_set_name
+        template_args["relative_base_dir"] = os.path.relpath(base_dir, output_directory)
+
+        output = template.render(**template_args)
+
         with open(html_output_path, 'w') as f:
             f.write(output)
 
@@ -390,7 +396,7 @@ def main(arguments):
     parser.add_argument("--description", type=str,
                         default="TODO: description of experimental setups")
     parser.add_argument("--site_spec", type=str, required=True)
-    parser.add_argument('--output_dir')
+    parser.add_argument('--output_dir', type=str, required=True)
     args = parser.parse_args(arguments)
 
     # TODO: add flag for summary stats instead of table for each, this should create a shorter appendix

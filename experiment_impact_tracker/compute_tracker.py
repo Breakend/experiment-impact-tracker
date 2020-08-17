@@ -21,18 +21,21 @@ from pandas.io.json import json_normalize
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
-from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
-                                                            INITIAL_INFO)
+from experiment_impact_tracker.data_info_and_router import DATA_HEADERS, INITIAL_INFO
 from experiment_impact_tracker.data_utils import *
-from experiment_impact_tracker.emissions.common import \
-    is_capable_realtime_carbon_intensity
-from experiment_impact_tracker.emissions.get_region_metrics import \
-    get_current_region_info_cached
-from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
-                                                  get_nvidia_gpu_power)
-from experiment_impact_tracker.utils import (get_timestamp, processify,
-                                             safe_file_path,
-                                             write_json_data_to_file)
+from experiment_impact_tracker.emissions.common import (
+    is_capable_realtime_carbon_intensity,
+)
+from experiment_impact_tracker.emissions.get_region_metrics import (
+    get_current_region_info_cached,
+)
+from experiment_impact_tracker.gpu.nvidia import get_gpu_info, get_nvidia_gpu_power
+from experiment_impact_tracker.utils import (
+    get_timestamp,
+    processify,
+    safe_file_path,
+    write_json_data_to_file,
+)
 
 SLEEP_TIME = 1
 STOP_MESSAGE = "Stop"

@@ -21,17 +21,18 @@ from jinja2 import Environment, FileSystemLoader
 
 import experiment_impact_tracker
 from experiment_impact_tracker.create_graph_appendix import (
-    create_graphs, create_scatterplot_from_df)
-from experiment_impact_tracker.data_utils import (load_data_into_frame,
-                                                  load_initial_info,
-                                                  zip_data_and_info)
-from experiment_impact_tracker.emissions.common import \
-    get_realtime_carbon_source
+    create_graphs,
+    create_scatterplot_from_df,
+)
+from experiment_impact_tracker.data_utils import (
+    load_data_into_frame,
+    load_initial_info,
+    zip_data_and_info,
+)
+from experiment_impact_tracker.emissions.common import get_realtime_carbon_source
 from experiment_impact_tracker.emissions.constants import PUE
-from experiment_impact_tracker.emissions.get_region_metrics import \
-    get_zone_name_by_id
-from experiment_impact_tracker.stats import (get_average_treatment_effect,
-                                             run_test)
+from experiment_impact_tracker.emissions.get_region_metrics import get_zone_name_by_id
+from experiment_impact_tracker.stats import get_average_treatment_effect, run_test
 from experiment_impact_tracker.utils import gather_additional_info
 
 pd.set_option("display.max_colwidth", -1)
