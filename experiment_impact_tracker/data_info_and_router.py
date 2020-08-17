@@ -6,6 +6,7 @@ from experiment_impact_tracker.cpu.common import (
     get_cpu_count_adjusted_load_avg,
     get_cpu_freq,
     get_my_cpu_info,
+    is_cpu_freq_compatible,
 )
 from experiment_impact_tracker.cpu.intel import (
     get_intel_power,
@@ -174,7 +175,7 @@ DATA_HEADERS = [
     {
         "name": "cpu_freq",
         "description": "Get cpu frequency including realtime in MHz.",
-        "compatability": [is_linux],
+        "compatability": [is_linux, is_cpu_freq_compatible],
         "routing": {"function": get_cpu_freq},
     },
     {
