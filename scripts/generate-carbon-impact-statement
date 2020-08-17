@@ -53,6 +53,7 @@ def main(arguments):
 
     total_power = data_interface.total_power
     kg_carbon = data_interface.kg_carbon
+    PUE = data_interface.PUE
 
     ssc = pd.read_csv("https://raw.githubusercontent.com/country-level-scc/cscc-database-2018/master/cscc_db_v2.csv")
 
@@ -99,16 +100,16 @@ def main(arguments):
     }
     """
     print(
-        ("This work contributed {:.3f} kg of $\\text{{CO}}_{{2eq}}$ to the atmosphere and used {:.3f} kWh of "
-        "electricity,  having a {}-specific social cost of carbon of \${:.2f} (\${:.2f}, \${:.2f}). Carbon "
+        (f"This work contributed {kg_carbon:.6f} kg of $\\text{{CO}}_{{2eq}}$ to the atmosphere and used "
+         f"{total_power:.6f} kWh of "
+        f"electricity,  having a {args.ISO3_COUNTRY_CODE}-specific social cost of carbon of \${median_carbon_cost:.2f} (\${lower_carbon_cost:.2f}, "
+         f"\${upper_carbon_cost:.2f}). Carbon "
         "accounting information can be found here: "
         "\\url{{<TODO: Insert URL of generated HTML appendix with all info here>}}.  The social cost of carbon uses "
         "models from \\citep{{ricke2018country}} and this statement and carbon emissions information was generated  "
         "using \\emph{{experiment-impact-tracker}}"
-        "\\citep{{henderson2019climate}}.\n\n{}\n\n{}").format(kg_carbon, total_power, args.ISO3_COUNTRY_CODE,
-                                                               median_carbon_cost, lower_carbon_cost,
-                                                               upper_carbon_cost,  bibtex_nature,
-                                                               bibtex_experiment_impact_tracker)
+        f"\\citep{{henderson2019climate}}. The PUE multiplier is assumed to be {PUE}\n\n{bibtex_nature}\n\
+        n{bibtex_experiment_impact_tracker}")
     )
 
 

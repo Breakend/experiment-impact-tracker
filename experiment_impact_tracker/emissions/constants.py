@@ -72,7 +72,7 @@ def load_regions_with_bounding_boxes():
     return all_geoms
 
 
-PUE = 1.58
+PUE = float(os.getenv("OVERRIDE_PUE", 1.58))
 REGIONS_WITH_BOUNDING_BOXES = load_regions_with_bounding_boxes()
 ZONE_INFO = _load_zone_info()["fallbackZoneMixes"]
 ZONE_NAMES = _load_zone_names()

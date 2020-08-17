@@ -28,7 +28,7 @@ def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp()):
     w2 = torch.randn(H, D_out, device=device)
 
     learning_rate = 1e-6
-    for t in range(1000):
+    for t in range(200):
         # Forward pass: compute predicted y
         h = x.mm(w1)
         h_relu = h.clamp(min=0)

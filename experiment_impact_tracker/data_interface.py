@@ -200,3 +200,4 @@ class DataInterface(object):
 
         self.kg_carbon = kg_carbon
         self.total_power = total_power
+        self.PUE = PUE
