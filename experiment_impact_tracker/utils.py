@@ -103,7 +103,6 @@ def _get_cpu_hours_from_per_process_data(json_array):
 
 def gather_additional_info(info, logdir):
     df, json_array = load_data_into_frame(logdir)
-    print("GATHER ADDITIONAL INFO")
     cpu_seconds = _get_cpu_hours_from_per_process_data(json_array)
     exp_len = datetime.timestamp(info["experiment_end"]) - datetime.timestamp(
         info["experiment_start"]
@@ -133,6 +132,7 @@ def gather_additional_info(info, logdir):
             len(power_draw_rapl_kw) - 1
         ]
     has_gpu = False
+
     if "gpu_info" in info.keys():
         has_gpu = True
         num_gpus = len(info["gpu_info"])
@@ -151,16 +151,19 @@ def gather_additional_info(info, logdir):
     kw_hr_rapl = (
         np.multiply(time_differences_in_hours, power_draw_rapl_kw)
         if power_draw_rapl_kw
-        else np.array([0])
+        else None
     )
 
+    total_power_per_timestep = None
     if has_gpu:
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
     else:
-        total_power_per_timestep = PUE * (kw_hr_rapl)
+        if kw_hr_rapl:
+            total_power_per_timestep = PUE * (kw_hr_rapl)
 
-    total_power = total_power_per_timestep.sum()
     realtime_carbon = None
+    total_power = None
+    estimated_carbon_impact_grams = None
     if "realtime_carbon_intensity" in df:
         realtime_carbon = df["realtime_carbon_intensity"]
         realtime_carbon.loc[len(realtime_carbon)] = realtime_carbon.loc[
@@ -178,28 +181,34 @@ def gather_additional_info(info, logdir):
         try:
             estimated_carbon_impact_grams_per_timestep = np.multiply(
                 total_power_per_timestep, realtime_carbon
-            )
+            ) if total_power_per_timestep else None
         except:
             import pdb
 
             pdb.set_trace()
-        estimated_carbon_impact_grams = estimated_carbon_impact_grams_per_timestep.sum()
+        estimated_carbon_impact_grams = estimated_carbon_impact_grams_per_timestep.sum() if estimated_carbon_impact_grams_per_timestep  else None
     else:
-        estimated_carbon_impact_grams = (
-            total_power * info["region_carbon_intensity_estimate"]["carbonIntensity"]
-        )
+        if total_power_per_timestep:
+            total_power = total_power_per_timestep.sum()
+            estimated_carbon_impact_grams = (
+            total_power * info["region_carbon_intensity_estimate"]["carbonIntensity"])
 
-    estimated_carbon_impact_kg = estimated_carbon_impact_grams / 1000.0
+    estimated_carbon_impact_kg = estimated_carbon_impact_grams / 1000.0 if estimated_carbon_impact_grams else None
 
     cpu_hours = cpu_seconds / 3600.0
 
-    data = {
-        "cpu_hours": cpu_hours,
-        "estimated_carbon_impact_kg": estimated_carbon_impact_kg,
-        "total_power": total_power,
-        "kw_hr_cpu": kw_hr_rapl.sum(),
-        "exp_len_hours": exp_len_hours,
-    }
+    data = { }
+
+    if cpu_hours:
+        data["cpu_hours"] = cpu_hours
+    if estimated_carbon_impact_kg:
+        data["estimated_carbon_impact_kg"] = estimated_carbon_impact_kg
+    if total_power:
+        data["total_power"] = total_power
+    if kw_hr_rapl:
+        data["kw_hr_cpu"] = kw_hr_rapl.sum()
+    if exp_len_hours:
+        data["exp_len_hours"] = exp_len_hours
 
     if has_gpu:
         # GPU-hours percent utilization * length of time utilized (assumes absolute utliziation)
