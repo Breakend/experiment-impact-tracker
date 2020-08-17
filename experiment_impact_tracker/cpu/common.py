@@ -27,6 +27,14 @@ def get_hz_actual(*args, **kwargs):
     return cpuinfo.get_cpu_info()["hz_actual"]
 
 
+def is_cpu_freq_compatible(*args, **kwargs):
+    try:
+        test = [x._asdict() for x in psutil.cpu_freq(percpu=True)]
+        return True
+    except NotImplementedError:  # psutil.cpu_freq() fails on some machines
+        return False
+
+
 def get_cpu_freq(*args, **kwargs):
     """ Returns all cpu freq of all cpu's available
     """
