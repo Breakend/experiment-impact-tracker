@@ -127,7 +127,7 @@ def gather_additional_info(info, logdir):
     power_draw_rapl_kw = None
 
     if "rapl_estimated_attributable_power_draw" in df:
-        power_draw_rapl_kw = df.get["rapl_estimated_attributable_power_draw"] / 1000.0
+        power_draw_rapl_kw = df["rapl_estimated_attributable_power_draw"] / 1000.0
         power_draw_rapl_kw.loc[len(power_draw_rapl_kw)] = power_draw_rapl_kw.loc[
             len(power_draw_rapl_kw) - 1
         ]
@@ -150,19 +150,21 @@ def gather_additional_info(info, logdir):
 
     kw_hr_rapl = (
         np.multiply(time_differences_in_hours, power_draw_rapl_kw)
-        if power_draw_rapl_kw
+        if power_draw_rapl_kw is not None
         else None
     )
 
     total_power_per_timestep = None
     if has_gpu:
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
-    else:
-        if kw_hr_rapl:
-            total_power_per_timestep = PUE * (kw_hr_rapl)
+    elif kw_hr_rapl is not None:
+        total_power_per_timestep = PUE * (kw_hr_rapl)
 
     realtime_carbon = None
-    total_power = None
+    total_power = (
+        total_power_per_timestep.sum() if total_power_per_timestep is not None else None
+    )
+
     estimated_carbon_impact_grams = None
     if "realtime_carbon_intensity" in df:
         realtime_carbon = df["realtime_carbon_intensity"]
@@ -179,35 +181,46 @@ def gather_additional_info(info, logdir):
             .fillna(value=info["region_carbon_intensity_estimate"]["carbonIntensity"])
         )
         try:
-            estimated_carbon_impact_grams_per_timestep = np.multiply(
-                total_power_per_timestep, realtime_carbon
-            ) if total_power_per_timestep else None
+            estimated_carbon_impact_grams_per_timestep = (
+                np.multiply(total_power_per_timestep, realtime_carbon)
+                if total_power_per_timestep
+                else None
+            )
         except:
             import pdb
 
             pdb.set_trace()
-        estimated_carbon_impact_grams = estimated_carbon_impact_grams_per_timestep.sum() if estimated_carbon_impact_grams_per_timestep  else None
+        estimated_carbon_impact_grams = (
+            estimated_carbon_impact_grams_per_timestep.sum()
+            if estimated_carbon_impact_grams_per_timestep
+            else None
+        )
     else:
-        if total_power_per_timestep:
-            total_power = total_power_per_timestep.sum()
+        if total_power is not None:
             estimated_carbon_impact_grams = (
-            total_power * info["region_carbon_intensity_estimate"]["carbonIntensity"])
+                total_power
+                * info["region_carbon_intensity_estimate"]["carbonIntensity"]
+            )
 
-    estimated_carbon_impact_kg = estimated_carbon_impact_grams / 1000.0 if estimated_carbon_impact_grams else None
+    estimated_carbon_impact_kg = (
+        estimated_carbon_impact_grams / 1000.0
+        if estimated_carbon_impact_grams is not None
+        else None
+    )
 
     cpu_hours = cpu_seconds / 3600.0
 
-    data = { }
+    data = {}
 
-    if cpu_hours:
+    if cpu_hours is not None:
         data["cpu_hours"] = cpu_hours
-    if estimated_carbon_impact_kg:
+    if estimated_carbon_impact_kg is not None:
         data["estimated_carbon_impact_kg"] = estimated_carbon_impact_kg
-    if total_power:
+    if total_power is not None:
         data["total_power"] = total_power
-    if kw_hr_rapl:
+    if kw_hr_rapl is not None:
         data["kw_hr_cpu"] = kw_hr_rapl.sum()
-    if exp_len_hours:
+    if exp_len_hours is not None:
         data["exp_len_hours"] = exp_len_hours
 
     if has_gpu:

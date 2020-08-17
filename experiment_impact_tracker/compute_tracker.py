@@ -53,15 +53,26 @@ def read_latest_stats(log_dir):
     """
     log_path = os.path.join(log_dir, DATAPATH)
 
-    try:
-        last_line = subprocess.check_output(["tail", "-1", log_path])
-    except:
-        return None
+    retry = 0
+    # Sometimes get a race condition
+    # TODO: should always use filelock for both reads and writes and clean up on termination
+    while retry < 3:
+        try:
+            try:
+                last_line = subprocess.check_output(["tail", "-1", log_path])
+            except:
+                return None
 
-    if last_line:
-        return json.loads(last_line)
-    else:
-        return None
+            if last_line:
+                return json.loads(last_line)
+            else:
+                return None
+        except ValueError:
+            retry += 1
+            if retry >= 3:
+                raise
+
+    return None
 
 
 def _sample_and_log_power(log_dir, initial_info, logger=None):
