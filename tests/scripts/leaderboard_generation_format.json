@@ -1,0 +1,20 @@
+{
+  "Comparing My two test experiments" :
+  {
+    "filter": "",
+    "description" : "A text experiment.",
+    "executive_summary_variables" : ["total_power", "exp_len_hours", "cpu_hours", "gpu_hours", "estimated_carbon_impact_kg"],
+    "child_experiments" :
+        {
+            "Experiment 1" : {
+                                "filter" : "exp1",
+                                "description" : "first run"
+                            },
+            "Experiment 2" : {
+                                "filter" : "exp2",
+                                "description" : "second run"
+                            }
+
+        }
+  }
+}

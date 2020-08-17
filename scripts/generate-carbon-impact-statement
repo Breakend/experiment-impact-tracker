@@ -22,6 +22,7 @@ from jinja2 import Environment, FileSystemLoader
 import experiment_impact_tracker
 from experiment_impact_tracker.create_graph_appendix import (
     create_graphs, create_scatterplot_from_df)
+from experiment_impact_tracker.data_interface import DataInterface
 from experiment_impact_tracker.data_utils import (load_data_into_frame,
                                                   load_initial_info,
                                                   zip_data_and_info)
@@ -36,7 +37,6 @@ from experiment_impact_tracker.utils import gather_additional_info
 
 pd.set_option('display.max_colwidth', -1)
 
-from experiment_impact_tracker.data_interface import DataInterface
 
 
 def main(arguments):

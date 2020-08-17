@@ -45,9 +45,13 @@
                 <a name="cpu_info"></a> 
                 <br> <div class="header"><span>CPU Info</span></div></span>
                 {{ cpu_info.to_html(classes="table table-striped") | safe }}
-                <a name="gpu_info"></a> 
+
+                {% if gpu_info is defined %}
+                <a name="gpu_info"></a>
                 <div class="header"><span>GPU Info</span></div></span>
                 {{ gpu_info.to_html(classes="table table-striped") | safe }}
+                {% endif %}
+
                 <a name="package_info"></a> 
                 <div class="header"><span>Package Info</span></div></span>
                 {{ package.to_html(classes="table table-striped") | safe }}

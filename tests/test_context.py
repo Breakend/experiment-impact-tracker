@@ -4,8 +4,9 @@ import tempfile
 import torch
 
 from experiment_impact_tracker.compute_tracker import ImpactTracker
-from experiment_impact_tracker.data_interface import DataInterface
 from experiment_impact_tracker.cpu.intel import is_intel_compatible
+from experiment_impact_tracker.data_interface import DataInterface
+
 
 def _helper_function():
 

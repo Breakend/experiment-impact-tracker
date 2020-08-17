@@ -5,19 +5,17 @@ import multiprocessing
 import os
 import platform
 import re
+import shlex
 import shutil
+import subprocess
 import sys
 import tempfile
 
-import pandas
+import pandas as pd
+from pandas import DataFrame
 
 sys.path.append("..")
 
-import shlex
-import subprocess
-
-import pandas as pd
-from pandas import DataFrame
 
 get_long_path = lambda x: x
 try:

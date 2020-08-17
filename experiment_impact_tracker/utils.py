@@ -1,5 +1,6 @@
 import atexit
 import csv
+import logging
 import os
 import sys
 import time
@@ -11,6 +12,7 @@ from multiprocessing import Process, Queue
 import numpy as np
 import pandas as pd
 import psutil
+import pytest
 import ujson
 
 from experiment_impact_tracker.data_utils import *
@@ -18,6 +20,8 @@ from experiment_impact_tracker.data_utils import load_data_into_frame
 from experiment_impact_tracker.emissions.constants import PUE
 
 _timer = getattr(time, "monotonic", time.time)
+
+log = logging.getLogger(__name__)
 
 
 def get_timestamp(*args, **kwargs):
@@ -91,7 +95,7 @@ def processify(func):
 def _get_cpu_hours_from_per_process_data(json_array):
     latest_per_pid = {}
     for datapoint in json_array:
-        cpu_point = datapoint["cpu_time_seconds"]
+        cpu_point = datapoint.get("cpu_time_seconds", {})
         for pid, value in cpu_point.items():
             latest_per_pid[pid] = value["user"] + value["system"]
     return sum(latest_per_pid.values())
@@ -99,6 +103,7 @@ def _get_cpu_hours_from_per_process_data(json_array):
 
 def gather_additional_info(info, logdir):
     df, json_array = load_data_into_frame(logdir)
+    print("GATHER ADDITIONAL INFO")
     cpu_seconds = _get_cpu_hours_from_per_process_data(json_array)
     exp_len = datetime.timestamp(info["experiment_end"]) - datetime.timestamp(
         info["experiment_start"]
@@ -120,10 +125,13 @@ def gather_additional_info(info, logdir):
 
     # elementwise multiplication and sum
     time_differences_in_hours = time_differences / 3600.0
-    power_draw_rapl_kw = df["rapl_estimated_attributable_power_draw"] / 1000.0
-    power_draw_rapl_kw.loc[len(power_draw_rapl_kw)] = power_draw_rapl_kw.loc[
-        len(power_draw_rapl_kw) - 1
-    ]
+    power_draw_rapl_kw = None
+
+    if "rapl_estimated_attributable_power_draw" in df:
+        power_draw_rapl_kw = df.get["rapl_estimated_attributable_power_draw"] / 1000.0
+        power_draw_rapl_kw.loc[len(power_draw_rapl_kw)] = power_draw_rapl_kw.loc[
+            len(power_draw_rapl_kw) - 1
+        ]
     has_gpu = False
     if "gpu_info" in info.keys():
         has_gpu = True
@@ -140,7 +148,11 @@ def gather_additional_info(info, logdir):
         # elementwise multiplication and sum
         kw_hr_nvidia = np.multiply(time_differences_in_hours, nvidia_power_draw_kw)
 
-    kw_hr_rapl = np.multiply(time_differences_in_hours, power_draw_rapl_kw)
+    kw_hr_rapl = (
+        np.multiply(time_differences_in_hours, power_draw_rapl_kw)
+        if power_draw_rapl_kw
+        else np.array([0])
+    )
 
     if has_gpu:
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
