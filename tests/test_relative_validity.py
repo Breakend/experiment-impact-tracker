@@ -47,41 +47,8 @@ def _helper_function(epochs=50):
         w1 -= learning_rate * grad_w1
         w2 -= learning_rate * grad_w2
 
-
-def test_two_contexts():
-    if not is_intel_compatible():
-        # For now, we have a requirement that at least the CPU info be recorded
-        # TODO: in the future we want to be able to only record GPU or whatever info is available
-        return
-    fname = tempfile.mkdtemp()
-    fname2 = tempfile.mkdtemp()
-
-    with ImpactTracker(fname):
-        _helper_function()
-
-    with ImpactTracker(fname2):
-        _helper_function()
-
-    data_interface1 = DataInterface([fname])
-    data_interface2 = DataInterface([fname2])
-
-    data_interface_both = DataInterface([fname, fname2])
-
-    assert (
-        data_interface1.kg_carbon + data_interface2.kg_carbon
-        == data_interface_both.kg_carbon
-    )
-    assert (
-        data_interface1.total_power + data_interface2.total_power
-        == data_interface_both.total_power
-    )
-
-
-def test_many_contexts():
-    """
-    Meant to check if we run into any OSError for too many file handles open at once
-
-    See https://github.com/Breakend/experiment-impact-tracker/issues/5
+def test_relative_accuracy():
+    """ Test that one obviously more intensive job returns more power than another
 
     :return:
     """
@@ -89,14 +56,18 @@ def test_many_contexts():
         # For now, we have a requirement that at least the CPU info be recorded
         # TODO: in the future we want to be able to only record GPU or whatever info is available
         return
-    files = []
 
-    for i in range(10):
-        fname = tempfile.mkdtemp()
-        files.append(fname)
+    fname1 = tempfile.mkdtemp()
 
-        with ImpactTracker(fname):
-            _helper_function()
+    with ImpactTracker(fname1):
+        _helper_function(50)
 
-    di = DataInterface(files)
-    assert di.total_power > 0 and di.kg_carbon > 0
+    fname2 = tempfile.mkdtemp()
+
+    with ImpactTracker(fname2):
+        _helper_function(100)
+
+    di = DataInterface([fname1])
+    di2 = DataInterface([fname2])
+
+    assert di2.total_power > di.total_power and di2.kg_carbon > di.kg_carbon
