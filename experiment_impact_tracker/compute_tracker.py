@@ -381,6 +381,10 @@ class ImpactTracker(object):
 
         :return:
         """
+        self.logger.info("Requesting thread shutdown.")
         self.queue.put(STOP_MESSAGE)
+        time.sleep(1)
         self.p.terminate()
+        self.logger.info("Starting - Logging final info.")
         log_final_info(self.logdir)
+        self.logger.info("Done - Logging final info.")

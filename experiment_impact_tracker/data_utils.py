@@ -40,6 +40,7 @@ def log_final_info(log_dir):
         pickle.dump(info, info_file)
 
 
+
 def safe_file_path(file_path):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):

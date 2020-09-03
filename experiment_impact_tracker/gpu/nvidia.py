@@ -39,6 +39,8 @@ def is_nvidia_compatible(*args, **kwargs):
     output = stdout.decode("UTF-8")
     if "no devices" in output.lower():
         return False
+    if "NVIDIA-SMI has failed".lower() in output.lower():
+        return False
 
     return True
 
