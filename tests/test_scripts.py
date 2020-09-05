@@ -7,9 +7,11 @@ from typing import Any
 import numpy as np
 
 
-def exp(exp_dir: Path) -> None:
+def exp(exp_dir: Path, track: bool = True) -> None:
     exp_dir.mkdir(parents=True, exist_ok=True)
     cmd = [sys.executable, "tests/scripts/myapp.py", "cpu", exp_dir]
+    if track:
+        cmd += ["True", "False"]
     result = subprocess.check_output(cmd)
     assert str(result.decode("utf-8")).strip().split()[-1] == "SUCCESS"
     assert Path(exp_dir / "impacttracker").exists()
@@ -66,3 +68,4 @@ def test_generate_carbon_impact_statement(tmpdir: Any) -> Any:
 
     np.testing.assert_allclose(kgcarbon2 / kgcarbon, 1.11 / 1.58, rtol=1e-02)
     np.testing.assert_allclose(kwh2 / kwh, 1.11 / 1.58, rtol=1e-02)
+

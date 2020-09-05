@@ -9,10 +9,12 @@ import torch
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 
 
-def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp()):
-    tracker = ImpactTracker(os.path.join(log_dir, ""))
+def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp(), epochs: int = 200,
+          track_impact: bool = True, check_for_errors: bool = True):
+    if track_impact:
+        tracker = ImpactTracker(os.path.join(log_dir, ""))
 
-    tracker.launch_impact_monitor()
+        tracker.launch_impact_monitor()
     device = torch.device(d)
 
     # N is batch size; D_in is input dimension;
@@ -28,7 +30,7 @@ def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp()):
     w2 = torch.randn(H, D_out, device=device)
 
     learning_rate = 1e-6
-    for t in range(200):
+    for t in range(epochs):
         # Forward pass: compute predicted y
         h = x.mm(w1)
         h_relu = h.clamp(min=0)
@@ -45,13 +47,16 @@ def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp()):
         # Update weights using gradient descent
         w1 -= learning_rate * grad_w1
         w2 -= learning_rate * grad_w2
-        tracker.get_latest_info_and_check_for_errors()
+        if check_for_errors:
+            tracker.get_latest_info_and_check_for_errors()
 
     print("SUCCESS")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 3:
+    if len(sys.argv) == 3:
         train(sys.argv[1], sys.argv[2])
+    elif len(sys.argv) > 3:
+        train(sys.argv[1], sys.argv[2], int(sys.argv[3]), bool(sys.argv[4]), bool(sys.argv[5]))
     else:
         train()
