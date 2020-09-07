@@ -2,7 +2,7 @@
 
 [![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/0)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/0)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/1)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/1)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/2)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/2)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/3)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/3)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/4)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/4)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/5)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/5)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/6)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/6)[![](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/images/7)](https://sourcerer.io/fame/asfhaslfuahsfliaufhs/Breakend/experiment-impact-tracker/links/7)
 
-The experiment-impact-tracker is meant to be a simple drop-in method to track energy usage, carbon emissions, and compute utilization of your system. Currently, on Linux systems with Intel chips (that support the RAPL powercap interface) and NVIDIA GPUs, we record: power draw from CPU and GPU, hardware information, python package versions, estimated carbon emissions information, etc. In California we even support realtime carbon emission information by querying caiso.com!
+The experiment-impact-tracker is meant to be a simple drop-in method to track energy usage, carbon emissions, and compute utilization of your system. Currently, on Linux systems with Intel chips (that support the RAPL or powergadget interfaces) and NVIDIA GPUs, we record: power draw from CPU and GPU, hardware information, python package versions, estimated carbon emissions information, etc. In California we even support realtime carbon emission information by querying caiso.com!
 
 Once all this information is logged, you can generate an online appendix which shows off this information like seen here:
 
@@ -209,14 +209,14 @@ sphinx-build -b html docsrc docs
 ## Compatible Systems
 
 Right now, we're only compatible with Linux and Mac OS X systems running NVIDIA GPU's and Intel processors (which
- support RAPL or PowerCap). 
+ support RAPL or PowerGadget). 
 
 If you'd like support for your use-case or encounter missing/broken functionality on your system specs, please open an issue or better yet submit a pull request! It's almost impossible to cover every combination on our own!
 
 ### Mac OS X Suppport
 
 Currently, we support only CPU and memory-related metrics on Mac OS X for Intel-based CPUs. However, these require the
- Intel PowerCap driver and the Intel PowerGadget tool. The easiest way to install this is:
+ Intel PowerGadget driver and the Intel PowerGadget tool. The easiest way to install this is:
  
 ```bash
 $ brew cask install intel-power-gadget
