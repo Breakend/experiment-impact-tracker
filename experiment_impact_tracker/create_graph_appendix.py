@@ -107,7 +107,7 @@ def create_scatterplot_from_df(
     df, x: str, y: str, output_path: str = ".", fig_x: int = 16, fig_y: int = 8
 ):
     """Loads an executive summary df and creates a scatterplot from some pre-specified variables.
-    
+
     Args:
         df ([type]): [description]
         x (str): [description]

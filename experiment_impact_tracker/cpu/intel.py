@@ -16,8 +16,7 @@ from . import powercap, rapl
 
 
 def get_and_cache_cpu_max_tdp_from_intel():
-    """ Goes to Intel's website and pulls information about TDP.
-    """
+    """Goes to Intel's website and pulls information about TDP."""
     cpu_brand = cpuinfo.get_cpu_info()["brand"].split(" ")[2]
     if os.path.exists(
         os.path.join(
@@ -71,7 +70,7 @@ def is_intel_compatible(*args, **kwargs):
 
 
 def get_intel_power(pid_list, logger=None, **kwargs):
-    """ Gathers CPU information from RAPL.
+    """Gathers CPU information from RAPL.
 
     Args:
         pid_list ([int]): List of process IDs to attribute power to.
@@ -94,7 +93,7 @@ def get_intel_power(pid_list, logger=None, **kwargs):
 
 
 def get_powercap_power(pid_list, logger=None, **kwargs):
-    """ Gathers CPU information from RAPL.
+    """Gathers CPU information from RAPL.
 
     Args:
         pid_list ([int]): List of process IDs to attribute power to.
@@ -300,7 +299,7 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
 
 
 def get_rapl_power(pid_list, logger=None, **kwargs):
-    """ Gathers CPU information from RAPL.
+    """Gathers CPU information from RAPL.
 
     Args:
         pid_list ([int]): List of process IDs to attribute power to.

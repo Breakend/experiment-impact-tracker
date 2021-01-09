@@ -3,7 +3,8 @@ import time
 
 import torch
 
-from experiment_impact_tracker.cpu.powercap import PowerGadget, is_powercap_compatible
+from experiment_impact_tracker.cpu.powercap import (PowerGadget,
+                                                    is_powercap_compatible)
 
 
 def _helper_function():

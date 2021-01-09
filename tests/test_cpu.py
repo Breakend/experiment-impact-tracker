@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 import pytest
 
-from experiment_impact_tracker.compute_tracker import _get_compatible_data_headers
+from experiment_impact_tracker.compute_tracker import \
+    _get_compatible_data_headers
 from experiment_impact_tracker.cpu.common import is_cpu_freq_compatible
 
 

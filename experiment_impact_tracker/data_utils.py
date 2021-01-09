@@ -40,7 +40,6 @@ def log_final_info(log_dir):
         pickle.dump(info, info_file)
 
 
-
 def safe_file_path(file_path):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
@@ -69,14 +68,14 @@ def zip_data_and_info(log_dir, zip_path):
 
 
 def zip_files(src, dst, arcname=None):
-    """ Compress a list of files to a given zip 
-    
+    """Compress a list of files to a given zip
+
     From https://stackoverflow.com/questions/16809328/zipfile-write-relative-path-of-files-reproduced-in-the-zip-archive
-    
+
     Args:
         @src: Iterable object containing one or more element
         @dst: filename (path/filename if needed)
-        @arcname: Iterable object containing the names we want to give to the elements in the archive (has to correspond to src) 
+        @arcname: Iterable object containing the names we want to give to the elements in the archive (has to correspond to src)
     """
     zip_ = zipfile.ZipFile(dst, "w")
 
