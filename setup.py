@@ -1,7 +1,5 @@
-import subprocess
 import sys
 from distutils.util import convert_path
-from distutils.version import LooseVersion
 
 from setuptools import find_packages, setup
 
@@ -69,9 +67,9 @@ setup(
         "Topic :: Software Development :: Build Tools",
         "License :: OSI Approved :: MIT License",  # Again, pick a license
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
 )
 

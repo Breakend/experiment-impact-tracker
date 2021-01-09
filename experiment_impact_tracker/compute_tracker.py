@@ -11,6 +11,7 @@ from pathlib import Path
 from queue import Empty as EmptyQueueException
 from subprocess import PIPE, Popen
 from sys import platform
+import multiprocessing
 
 import numpy as np
 import pandas as pd
@@ -290,6 +291,9 @@ class ImpactTracker(object):
         :return:
         """
         try:
+            # the defaults for multiprocessing changed in python 3.8.
+            # OS X multiprocessing starts processes with spawn instead of fork
+            multiprocessing.set_start_method("fork")
             self.p, self.queue = launch_power_monitor(
                 self.logdir, self.initial_info, self.logger
             )
