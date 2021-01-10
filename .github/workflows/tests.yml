@@ -24,5 +24,6 @@ jobs:
     - name: Run example app
       run: |
         pip install -e .
+        pip install pytest
         python examples/my_experiment.py
         pytest tests/test_memory_attribution.py 
