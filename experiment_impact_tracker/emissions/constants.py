@@ -7,12 +7,12 @@ from shapely.geometry import shape
 
 
 def read_terrible_json(path):
-    """ Reads a slightly malformed json file 
+    """Reads a slightly malformed json file
     where each line is a different json dict.
-    
+
     Args:
         path (string): the filepath to read from
-    
+
     Returns:
         [dict]: list of dictionaries
     """
@@ -29,7 +29,7 @@ def read_terrible_json(path):
 
 def _load_zone_info():
     """Loads zone information from the json file in the package.
-    
+
     Returns:
         dict : the loaded json file
     """
@@ -41,7 +41,7 @@ def _load_zone_info():
 
 def _load_zone_names():
     """Loads zone name info from the json file in the package.
-    
+
     Returns:
         dict : the loaded json file
     """
@@ -53,7 +53,7 @@ def _load_zone_names():
 
 def load_regions_with_bounding_boxes():
     """Loads bounding boxes as shapely objects.
-    
+
     Returns:
         list: list of shapely objects containing regional geometries
     """

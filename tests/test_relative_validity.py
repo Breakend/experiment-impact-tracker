@@ -47,8 +47,9 @@ def _helper_function(epochs=50):
         w1 -= learning_rate * grad_w1
         w2 -= learning_rate * grad_w2
 
+
 def test_relative_accuracy():
-    """ Test that one obviously more intensive job returns more power than another
+    """Test that one obviously more intensive job returns more power than another
 
     :return:
     """

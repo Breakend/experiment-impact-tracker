@@ -68,4 +68,3 @@ def test_generate_carbon_impact_statement(tmpdir: Any) -> Any:
 
     np.testing.assert_allclose(kgcarbon2 / kgcarbon, 1.11 / 1.58, rtol=1e-02)
     np.testing.assert_allclose(kwh2 / kwh, 1.11 / 1.58, rtol=1e-02)
-

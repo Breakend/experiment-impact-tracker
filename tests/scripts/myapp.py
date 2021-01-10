@@ -9,8 +9,13 @@ import torch
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 
 
-def train(d: str = "cpu", log_dir: str = tempfile.mkdtemp(), epochs: int = 200,
-          track_impact: bool = True, check_for_errors: bool = True):
+def train(
+    d: str = "cpu",
+    log_dir: str = tempfile.mkdtemp(),
+    epochs: int = 200,
+    track_impact: bool = True,
+    check_for_errors: bool = True,
+):
     if track_impact:
         tracker = ImpactTracker(os.path.join(log_dir, ""))
 
@@ -57,6 +62,12 @@ if __name__ == "__main__":
     if len(sys.argv) == 3:
         train(sys.argv[1], sys.argv[2])
     elif len(sys.argv) > 3:
-        train(sys.argv[1], sys.argv[2], int(sys.argv[3]), bool(sys.argv[4]), bool(sys.argv[5]))
+        train(
+            sys.argv[1],
+            sys.argv[2],
+            int(sys.argv[3]),
+            bool(sys.argv[4]),
+            bool(sys.argv[5]),
+        )
     else:
         train()
