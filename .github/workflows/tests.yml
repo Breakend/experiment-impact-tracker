@@ -1,10 +1,6 @@
 name: Run tests using Conda
 
-on:
-   push:
-    branches:
-      - master
-      - jh-test
+on: [push]
 
 jobs:
   build-linux:
