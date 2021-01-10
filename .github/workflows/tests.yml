@@ -1,4 +1,4 @@
-name: Run example app using Conda
+name: Run tests using Conda
 
 on:
    push:
