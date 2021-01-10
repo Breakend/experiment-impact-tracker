@@ -154,7 +154,7 @@ def gather_additional_info(info, logdir):
     )
 
     total_power_per_timestep = None
-    if has_gpu and kw_hr_rapl is not None:
+    if has_gpu and (kw_hr_rapl is not None):
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
     elif kw_hr_rapl is not None:
         total_power_per_timestep = PUE * (kw_hr_rapl)
