@@ -11,8 +11,6 @@ from multiprocessing import Process, Queue
 
 import numpy as np
 import pandas as pd
-import psutil
-import ujson
 
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.data_utils import load_data_into_frame
