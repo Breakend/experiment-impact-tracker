@@ -1,5 +1,6 @@
 import atexit
 import logging
+import multiprocessing
 import os
 import pickle
 import subprocess
@@ -21,21 +22,18 @@ from pandas.io.json import json_normalize
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
-from experiment_impact_tracker.data_info_and_router import DATA_HEADERS, INITIAL_INFO
+from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
+                                                            INITIAL_INFO)
 from experiment_impact_tracker.data_utils import *
-from experiment_impact_tracker.emissions.common import (
-    is_capable_realtime_carbon_intensity,
-)
-from experiment_impact_tracker.emissions.get_region_metrics import (
-    get_current_region_info_cached,
-)
-from experiment_impact_tracker.gpu.nvidia import get_gpu_info, get_nvidia_gpu_power
-from experiment_impact_tracker.utils import (
-    get_timestamp,
-    processify,
-    safe_file_path,
-    write_json_data_to_file,
-)
+from experiment_impact_tracker.emissions.common import \
+    is_capable_realtime_carbon_intensity
+from experiment_impact_tracker.emissions.get_region_metrics import \
+    get_current_region_info_cached
+from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
+                                                  get_nvidia_gpu_power)
+from experiment_impact_tracker.utils import (get_timestamp, processify,
+                                             safe_file_path,
+                                             write_json_data_to_file)
 
 SLEEP_TIME = 1
 STOP_MESSAGE = "Stop"
@@ -206,7 +204,7 @@ def _validate_compatabilities(compatabilities, *args, **kwargs):
 
 
 def gather_initial_info(log_dir: str):
-    """ Log one time info
+    """Log one time info
 
     For example, CPU/GPU info, version of this package, region, datetime for start of experiment,
     CO2 estimate data.
@@ -290,6 +288,9 @@ class ImpactTracker(object):
         :return:
         """
         try:
+            # the defaults for multiprocessing changed in python 3.8.
+            # OS X multiprocessing starts processes with spawn instead of fork
+            multiprocessing.set_start_method("fork")
             self.p, self.queue = launch_power_monitor(
                 self.logdir, self.initial_info, self.logger
             )

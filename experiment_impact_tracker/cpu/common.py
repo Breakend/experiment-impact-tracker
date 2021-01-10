@@ -7,7 +7,7 @@ from .exceptions import CPUAttributeAssertionError
 
 
 def get_my_cpu_info():
-    """ Gather current cpu hardware info for this machine.
+    """Gather current cpu hardware info for this machine.
 
     Returns:
         dict : info about cpu
@@ -19,7 +19,7 @@ def get_my_cpu_info():
 
 
 def get_hz_actual(*args, **kwargs):
-    """ Gets the current effective Hz of the CPU
+    """Gets the current effective Hz of the CPU
 
     Returns:
         str : Hz
@@ -36,8 +36,7 @@ def is_cpu_freq_compatible(*args, **kwargs):
 
 
 def get_cpu_freq(*args, **kwargs):
-    """ Returns all cpu freq of all cpu's available
-    """
+    """Returns all cpu freq of all cpu's available"""
     try:
         return [x._asdict() for x in psutil.cpu_freq(percpu=True)]
     except NotImplementedError:  # psutil.cpu_freq() fails on some machines

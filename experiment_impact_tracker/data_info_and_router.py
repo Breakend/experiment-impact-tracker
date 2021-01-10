@@ -3,33 +3,22 @@ from datetime import datetime
 import experiment_impact_tracker
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import (
-    get_cpu_count_adjusted_load_avg,
-    get_cpu_freq,
-    get_my_cpu_info,
-    is_cpu_freq_compatible,
-)
-from experiment_impact_tracker.cpu.intel import (
-    get_intel_power,
-    get_rapl_power,
-    is_intel_compatible,
-)
+    get_cpu_count_adjusted_load_avg, get_cpu_freq, get_my_cpu_info,
+    is_cpu_freq_compatible)
+from experiment_impact_tracker.cpu.intel import (get_intel_power,
+                                                 get_rapl_power,
+                                                 is_intel_compatible)
 from experiment_impact_tracker.disk.common import measure_disk_speed_at_dir
 from experiment_impact_tracker.emissions.common import (
-    get_realtime_carbon,
-    is_capable_realtime_carbon_intensity,
-)
-from experiment_impact_tracker.emissions.get_region_metrics import (
-    get_current_region_info_cached,
-)
-from experiment_impact_tracker.gpu.nvidia import (
-    get_gpu_info,
-    get_nvidia_gpu_power,
-    is_nvidia_compatible,
-)
+    get_realtime_carbon, is_capable_realtime_carbon_intensity)
+from experiment_impact_tracker.emissions.get_region_metrics import \
+    get_current_region_info_cached
+from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
+                                                  get_nvidia_gpu_power,
+                                                  is_nvidia_compatible)
 from experiment_impact_tracker.operating_system.common import is_linux
-from experiment_impact_tracker.py_environment.common import (
-    get_python_packages_and_versions,
-)
+from experiment_impact_tracker.py_environment.common import \
+    get_python_packages_and_versions
 from experiment_impact_tracker.utils import *
 
 get_version_number = lambda *args, **kwargs: experiment_impact_tracker.__version__

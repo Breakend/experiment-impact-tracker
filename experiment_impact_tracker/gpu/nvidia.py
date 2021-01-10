@@ -22,7 +22,7 @@ _timer = getattr(time, "monotonic", time.time)
 
 
 def is_nvidia_compatible(*args, **kwargs):
-    """ Check if this system supports nvidia tools required
+    """Check if this system supports nvidia tools required
 
     :param args:
     :param kwargs:
@@ -46,7 +46,7 @@ def is_nvidia_compatible(*args, **kwargs):
 
 
 def get_gpu_info(*args, **kwargs):
-    """ Gathers general hardware information about an nvidia GPU
+    """Gathers general hardware information about an nvidia GPU
 
     :param args:
     :param kwargs:
@@ -106,7 +106,7 @@ def assert_gpus_by_attributes(attributes_set):
 
 
 def _stringify_performance_states(state_dict):
-    """ Stringifies performance states across multiple gpus
+    """Stringifies performance states across multiple gpus
 
     Args:
         state_dict (dict(str)): a dictionary of gpu_id performance state values

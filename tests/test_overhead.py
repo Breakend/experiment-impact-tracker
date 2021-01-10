@@ -1,9 +1,9 @@
 import re
 import subprocess
 import sys
+import timeit
 from pathlib import Path
 from typing import Any
-import timeit
 
 import numpy as np
 
@@ -30,13 +30,17 @@ def test_overhead(tmpdir: Any) -> Any:
     times1 = timeit.timeit(lambda: exp(exp1), number=5)
     times2 = timeit.timeit(lambda: exp(exp2, track=False), number=5)
 
-    first_diff = times2/times1
-    assert times2/times1 > .99
+    first_diff = times2 / times1
+    assert times2 / times1 > 0.99
 
     times1 = timeit.timeit(lambda: exp(exp1, epochs=500), number=5)
     times2 = timeit.timeit(lambda: exp(exp2, epochs=500, track=False), number=5)
 
-    assert times2/times1 > .99
+    assert times2 / times1 > 0.99
 
-    print(f"200 epochs without the tracker required {first_diff} of the time as with the tracker")
-    print(f"500 epochs without the tracker required {times2/times1} of the time as with the tracker")
+    print(
+        f"200 epochs without the tracker required {first_diff} of the time as with the tracker"
+    )
+    print(
+        f"500 epochs without the tracker required {times2/times1} of the time as with the tracker"
+    )
