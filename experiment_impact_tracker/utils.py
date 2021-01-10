@@ -12,7 +12,6 @@ from multiprocessing import Process, Queue
 import numpy as np
 import pandas as pd
 import psutil
-import pytest
 import ujson
 
 from experiment_impact_tracker.data_utils import *
