@@ -148,10 +148,15 @@ def gather_additional_info(info, logdir):
     )
 
     total_power_per_timestep = None
-    if has_gpu:
+    if has_gpu and (kw_hr_rapl is not None):
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
     elif kw_hr_rapl is not None:
         total_power_per_timestep = PUE * (kw_hr_rapl)
+    elif has_gpu:
+        total_power_per_timestep = PUE * (kw_hr_nvidia)
+    else:
+        raise ValueError("Unable to get either GPU or CPU metric.")
+
 
     realtime_carbon = None
     total_power = (
@@ -180,9 +185,8 @@ def gather_additional_info(info, logdir):
                 else None
             )
         except:
-            import pdb
+            import pdb; pdb.set_trace()
 
-            pdb.set_trace()
         estimated_carbon_impact_grams = (
             estimated_carbon_impact_grams_per_timestep.sum()
             if estimated_carbon_impact_grams_per_timestep

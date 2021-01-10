@@ -25,4 +25,3 @@ jobs:
       run: |
         pip install -e .
         python examples/my_experiment.py
-        

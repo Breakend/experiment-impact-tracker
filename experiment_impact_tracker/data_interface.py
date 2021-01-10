@@ -179,6 +179,10 @@ def _method_from_string(function_string):
 
 class DataInterface(object):
     def __init__(self, logdirs):
+
+        if isinstance(logdirs, str):
+            logdirs = [logdirs]
+
         all_log_dirs = []
 
         for log_dir in logdirs:
@@ -191,6 +195,7 @@ class DataInterface(object):
         all_log_dirs = list(set(all_log_dirs))
         kg_carbon = 0
         total_power = 0.0
+
         for log_dir in all_log_dirs:
             info = load_initial_info(log_dir)
             extracted_info = gather_additional_info(info, log_dir)
