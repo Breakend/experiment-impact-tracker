@@ -25,4 +25,4 @@ jobs:
       run: |
         pip install -e .
         python examples/my_experiment.py
-        
+        pytest tests/test_memory_attribution.py 
