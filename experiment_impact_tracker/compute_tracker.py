@@ -356,6 +356,8 @@ class ImpactTracker(object):
             )
         self.launch_impact_monitor()
 
+        return self
+
     def __exit__(self, exc_type, exc_value, tb):
         """
         Allows the object to function as a context and exit.

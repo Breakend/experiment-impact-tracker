@@ -38,6 +38,5 @@ def test_overhead(tmpdir: Any) -> Any:
 
     assert times2/times1 > .99
 
-
     print(f"200 epochs without the tracker required {first_diff} of the time as with the tracker")
     print(f"500 epochs without the tracker required {times2/times1} of the time as with the tracker")

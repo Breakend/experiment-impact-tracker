@@ -187,9 +187,8 @@ def gather_additional_info(info, logdir):
                 else None
             )
         except:
-            import pdb
+            import pdb; pdb.set_trace()
 
-            pdb.set_trace()
         estimated_carbon_impact_grams = (
             estimated_carbon_impact_grams_per_timestep.sum()
             if estimated_carbon_impact_grams_per_timestep

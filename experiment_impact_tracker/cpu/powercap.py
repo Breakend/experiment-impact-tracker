@@ -75,7 +75,6 @@ class PowerGadget(object):
 
     def start(self):
         directory = get_long_path(tempfile.mkdtemp())
-        print(directory)
         self._logfile = os.path.join(directory, "PowerLog.csv")
         self._log_process = multiprocessing.Process(target=self._start)
         self._log_process.start()

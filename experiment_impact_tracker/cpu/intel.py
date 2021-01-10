@@ -214,21 +214,24 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
 
     total_physical_memory = psutil.virtual_memory()
     # what percentage of used memory can be attributed to this process
-    # uss is unique memory to this process (if you killed it now that would be freed). PSS is shared memory split evenly among processes using the memory
-    # summing these two gets us a nice fair metric for the actual memory used in the RAM hardware. The unique bits are directly attributable to the process
+    # pss (Linux): aka “Proportional Set Size”, is the amount of memory shared with other processes, accounted in a
+    # way  that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to
+    # itself and 10 MBs shared with another process its PSS will be 15 MBs.
+    # summing these two gets us a nice fair metric for the actual memory used in the RAM hardware. The unique bits
+    # are directly attributable to the process
     # and the shared bits we give credit based on how many processes share those bits
-    uss_avail = all(["uss" in x.keys() for x in mem_info_per_process.values()])
+    pss_avail = all(["pss" in x.keys() for x in mem_info_per_process.values()])
 
-    if uss_avail:
+    if pss_avail:
         system_wide_mem_percent = np.sum(
             [
-                float(x["uss"] + x["pss"])
+                float(x["pss"])
                 / float(total_physical_memory.total - total_physical_memory.available)
                 for x in mem_info_per_process.values()
             ]
         )
     else:
-        # Sometimes we don't have access to USS so just need to make due with pss
+        # Sometimes we don't have access to PSS so just need to make due with Rss
         system_wide_mem_percent = np.sum(
             [
                 float(x["rss"])
@@ -240,7 +243,8 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
     power_credit_mem = system_wide_mem_percent
     if power_credit_cpu == 0:
         logger.warn(
-            "Problem retrieving CPU usage percentage to assign power credit, not using any CPU. This is possibly true, but seems unlikely! See if there's a problem!"
+            "Problem retrieving CPU usage percentage to assign power credit, not using any CPU. This is possibly "
+            "true, but seems unlikely! See if there's a problem! "
         )
     if power_credit_mem == 0:
         raise ValueError(
@@ -263,14 +267,14 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
             "It seems that power estimates from Intel RAPL are coming back 0, this indicates a problem."
         )
 
-    if uss_avail:
+    if pss_avail:
         abs_mem_usage = np.sum(
-            [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
+            [float(x["pss"]) for x in mem_info_per_process.values()]
         )
 
         abs_mem_percent_usage = np.sum(
             [
-                float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
+                float(x["pss"]) / float(total_physical_memory.total)
                 for x in mem_info_per_process.values()
             ]
         )
@@ -283,6 +287,12 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
                 for x in mem_info_per_process.values()
             ]
         )
+
+    if total_intel_power < total_attributable_power:
+        raise ValueError("For some reason the total intel estimated power is less than the attributable power. This "
+                         "means there is an error in computing the attribution. Please re-open "
+                         "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
+                         "warning.")
 
     data_return_values_with_headers = {
         "rapl_power_draw_absolute": total_intel_power,
@@ -461,20 +471,23 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
 
     total_physical_memory = psutil.virtual_memory()
     # what percentage of used memory can be attributed to this process
-    # uss is unique memory to this process (if you killed it now that would be freed). PSS is shared memory split evenly among processes using the memory
-    # summing these two gets us a nice fair metric for the actual memory used in the RAM hardware. The unique bits are directly attributable to the process
+    # pss (Linux): aka “Proportional Set Size”, is the amount of memory shared with other processes, accounted in a way
+    # that the amount is divided evenly between the processes that share it. I.e. if a process has 10 MBs all to itself
+    # and 10 MBs shared with another process its PSS will be 15 MBs.
+    # summing these two gets us a nice fair metric for the actual memory used in the RAM hardware.
+    # The unique bits are directly attributable to the process
     # and the shared bits we give credit based on how many processes share those bits
-    uss_avail = all(["uss" in x for x in mem_info_per_process.values()])
-    if uss_avail:
+    pss_avail = all(["pss" in x for x in mem_info_per_process.values()])
+    if pss_avail:
         system_wide_mem_percent = np.sum(
             [
-                float(x["uss"] + x["pss"])
+                float(x["pss"])
                 / float(total_physical_memory.total - total_physical_memory.available)
                 for x in mem_info_per_process.values()
             ]
         )
     else:
-        # Sometimes we don't have access to USS so just need to make due with pss
+        # Sometimes we don't have access to PSS so just need to make due with rss
         system_wide_mem_percent = np.sum(
             [
                 float(x["rss"])
@@ -509,14 +522,14 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
             "It seems that power estimates from Intel RAPL are coming back 0, this indicates a problem."
         )
 
-    if uss_avail:
+    if pss_avail:
         abs_mem_usage = np.sum(
-            [float(x["uss"] + x["pss"]) for x in mem_info_per_process.values()]
+            [float(x["pss"]) for x in mem_info_per_process.values()]
         )
 
         abs_mem_percent_usage = np.sum(
             [
-                float(x["uss"] + x["pss"]) / float(total_physical_memory.total)
+                float(x["pss"]) / float(total_physical_memory.total)
                 for x in mem_info_per_process.values()
             ]
         )
@@ -529,6 +542,12 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
                 for x in mem_info_per_process.values()
             ]
         )
+
+    if total_intel_power < total_attributable_power:
+        raise ValueError("For some reason the total intel estimated power is less than the attributable power. This "
+                         "means there is an error in computing the attribution. Please re-open "
+                         "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
+                         "warning.")
 
     data_return_values_with_headers = {
         "rapl_power_draw_absolute": total_intel_power,
