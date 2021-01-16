@@ -36,8 +36,8 @@ def test_generate_carbon_impact_statement(tmpdir: Any) -> Any:
         "USA",
     ]
     # for now make sure the script runs.
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, stderr = p.communicate()
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
+        output, stderr = p.communicate()
 
     assert ("looks like your experiment ended abruptly" in stderr.decode("utf-8").lower())
 
