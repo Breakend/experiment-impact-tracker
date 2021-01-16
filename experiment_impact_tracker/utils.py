@@ -156,7 +156,6 @@ def gather_additional_info(info, logdir):
         else None
     )
 
-    total_power_per_timestep = None
     if has_gpu and (kw_hr_rapl is not None):
         total_power_per_timestep = PUE * (kw_hr_nvidia + kw_hr_rapl)
     elif kw_hr_rapl is not None:
@@ -189,18 +188,16 @@ def gather_additional_info(info, logdir):
         try:
             estimated_carbon_impact_grams_per_timestep = (
                 np.multiply(total_power_per_timestep, realtime_carbon)
-                if total_power_per_timestep
-                else None
+                if not total_power_per_timestep.empty
+                else pd.DataFrame()
             )
-        except:
-            import pdb
-
-            pdb.set_trace()
+        except :
+            log.exception("")
 
         estimated_carbon_impact_grams = (
             estimated_carbon_impact_grams_per_timestep.sum()
-            if estimated_carbon_impact_grams_per_timestep
-            else None
+            if not estimated_carbon_impact_grams_per_timestep.empty
+            else pd.DataFrame()
         )
     else:
         if total_power is not None:

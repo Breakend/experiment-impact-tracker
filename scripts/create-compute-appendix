@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from __future__ import print_function
-
 import argparse
 import json
 import os
@@ -28,6 +26,7 @@ from experiment_impact_tracker.emissions.get_region_metrics import \
 from experiment_impact_tracker.utils import gather_additional_info
 
 pd.set_option('display.max_colwidth', -1)
+
 
 def _gather_executive_summary(aggregated_info, executive_summary_variables, experiment_set_names, all_points=False):
     # Gather variables to generate executive summary for
@@ -211,7 +210,6 @@ def _aggregated_data_for_filterset(output_dir,
 
                 # {k: [v] for k, v in info["gpu_info"].items()})
                 if "gpu_info" in info:
-                    import pdb;pdb.set_trace()
                     gpu_data_frame = pd.DataFrame.from_dict(info["gpu_info"])
                     gpu_infos_all[experiment_set_names[exp_set]].append(
                         gpu_data_frame)
@@ -283,7 +281,7 @@ def _create_leaf_page(output_directory, all_infos, exp_set_name, description, ex
             data_zip_paths_all[exp_set_name][i], html_output_dir)
 
         template_args = {}
-        if gpu_infos_all and gpu_infos_all[exp_set_name] and gpu_infos_all[exp_set_name][i]:
+        if len(gpu_infos_all) > 0 and len(gpu_infos_all[exp_set_name]) > 0 and not gpu_infos_all[exp_set_name][i].empty:
             template_args["gpu_info"] = gpu_infos_all[exp_set_name][i].T
 
         template_args["exp_set_names_titles"] = [(_format_setname(experiment_set_names[exp_set]), experiment_set_names[exp_set])
