@@ -9,7 +9,7 @@ import numpy as np
 
 def exp(exp_dir: Path, track: bool = True) -> None:
     exp_dir.mkdir(parents=True, exist_ok=True)
-    cmd = [sys.executable, "tests/scripts/myapp.py", "cpu", exp_dir]
+    cmd = [sys.executable, "tests/scripts/myapp.py", "cpu", exp_dir, "200"]
     if track:
         cmd += ["True", "False"]
     result = subprocess.check_output(cmd)

@@ -267,9 +267,7 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
         )
 
     if pss_avail:
-        abs_mem_usage = np.sum(
-            [float(x["pss"]) for x in mem_info_per_process.values()]
-        )
+        abs_mem_usage = np.sum([float(x["pss"]) for x in mem_info_per_process.values()])
 
         abs_mem_percent_usage = np.sum(
             [
@@ -288,10 +286,12 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
         )
 
     if total_intel_power < total_attributable_power:
-        raise ValueError("For some reason the total intel estimated power is less than the attributable power. This "
-                         "means there is an error in computing the attribution. Please re-open "
-                         "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
-                         "warning.")
+        raise ValueError(
+            "For some reason the total intel estimated power is less than the attributable power. This "
+            "means there is an error in computing the attribution. Please re-open "
+            "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
+            "warning."
+        )
 
     data_return_values_with_headers = {
         "rapl_power_draw_absolute": total_intel_power,
@@ -522,9 +522,7 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         )
 
     if pss_avail:
-        abs_mem_usage = np.sum(
-            [float(x["pss"]) for x in mem_info_per_process.values()]
-        )
+        abs_mem_usage = np.sum([float(x["pss"]) for x in mem_info_per_process.values()])
 
         abs_mem_percent_usage = np.sum(
             [
@@ -543,10 +541,12 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         )
 
     if total_intel_power < total_attributable_power:
-        raise ValueError("For some reason the total intel estimated power is less than the attributable power. This "
-                         "means there is an error in computing the attribution. Please re-open "
-                         "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
-                         "warning.")
+        raise ValueError(
+            "For some reason the total intel estimated power is less than the attributable power. This "
+            "means there is an error in computing the attribution. Please re-open "
+            "https://github.com/Breakend/experiment-impact-tracker/issues/38 and add the trace for this "
+            "warning."
+        )
 
     data_return_values_with_headers = {
         "rapl_power_draw_absolute": total_intel_power,

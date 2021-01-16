@@ -97,9 +97,19 @@ def _get_cpu_hours_from_per_process_data(json_array):
 def gather_additional_info(info, logdir):
     df, json_array = load_data_into_frame(logdir)
     cpu_seconds = _get_cpu_hours_from_per_process_data(json_array)
-    exp_len = datetime.timestamp(info["experiment_end"]) - datetime.timestamp(
-        info["experiment_start"]
-    )
+
+    if "experiment_end" not in info:
+        log.warning(
+            "It looks like your experiment ended abruptly and didn't log an appropriate end time due to some "
+            "error. We're falling back to using the last logged timestamp, but this may not be accurate."
+            "Please keep this in mind before reporting information."
+        )
+        exp_end_timestamp = df["timestamp"].max()
+    else:
+
+        exp_end_timestamp = datetime.timestamp(info["experiment_end"])
+
+    exp_len = exp_end_timestamp - datetime.timestamp(info["experiment_start"])
     exp_len_hours = exp_len / 3600.0
     # integrate power
     # https://electronics.stackexchange.com/questions/237025/converting-watt-values-over-time-to-kwh
@@ -111,8 +121,7 @@ def gather_additional_info(info, logdir):
 
     # Add final timestamp and extrapolate last row of power estimates
     time_differences.loc[len(time_differences)] = (
-        datetime.timestamp(info["experiment_end"])
-        - df["timestamp"][len(df["timestamp"]) - 1]
+        exp_end_timestamp - df["timestamp"][len(df["timestamp"]) - 1]
     )
 
     # elementwise multiplication and sum
@@ -156,7 +165,6 @@ def gather_additional_info(info, logdir):
     else:
         raise ValueError("Unable to get either GPU or CPU metric.")
 
-
     realtime_carbon = None
     total_power = (
         total_power_per_timestep.sum() if total_power_per_timestep is not None else None
@@ -184,7 +192,7 @@ def gather_additional_info(info, logdir):
                 else pd.DataFrame()
             )
         except :
-            log.exception('')
+            log.exception("")
 
         estimated_carbon_impact_grams = (
             estimated_carbon_impact_grams_per_timestep.sum()

@@ -54,8 +54,12 @@ def main(arguments):
     total_power = data_interface.total_power
     kg_carbon = data_interface.kg_carbon
     PUE = data_interface.PUE
+    total_wall_clock_time = data_interface.exp_len_hours
 
-    ssc = pd.read_csv("https://raw.githubusercontent.com/country-level-scc/cscc-database-2018/master/cscc_db_v2.csv")
+    cscc_filepath = os.path.join(os.path.dirname(experiment_impact_tracker.__file__),
+                                'emissions/data/cscc_db_v2.csv')
+
+    ssc = pd.read_csv(cscc_filepath)
 
     # only use short-run model
     ssc = ssc[ssc["run"] == "bhm_sr"]
@@ -108,8 +112,9 @@ def main(arguments):
         "\\url{{<TODO: Insert URL of generated HTML appendix with all info here>}}.  The social cost of carbon uses "
         "models from \\citep{{ricke2018country}} and this statement and carbon emissions information was generated  "
         "using \\emph{{experiment-impact-tracker}}"
-        f"\\citep{{henderson2019climate}}. The PUE multiplier is assumed to be {PUE}\n\n{bibtex_nature}\n\
-        n{bibtex_experiment_impact_tracker}")
+        f"\\citep{{henderson2019climate}}. The PUE multiplier is assumed to be {PUE}. The total wall-clock time of "
+         f"all experiments was {total_wall_clock_time:.3f} hours."
+         f"\n\n{bibtex_nature}\n\n{bibtex_experiment_impact_tracker}")
     )
 
 
