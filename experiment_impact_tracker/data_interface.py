@@ -195,13 +195,16 @@ class DataInterface(object):
         all_log_dirs = list(set(all_log_dirs))
         kg_carbon = 0
         total_power = 0.0
+        exp_len_hours = 0
 
         for log_dir in all_log_dirs:
             info = load_initial_info(log_dir)
             extracted_info = gather_additional_info(info, log_dir)
             kg_carbon += float(extracted_info["estimated_carbon_impact_kg"])
             total_power += float(extracted_info["total_power"])
+            exp_len_hours += float(extracted_info["exp_len_hours"])
 
         self.kg_carbon = kg_carbon
         self.total_power = total_power
         self.PUE = PUE
+        self.exp_len_hours = exp_len_hours
