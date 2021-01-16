@@ -18,7 +18,6 @@ def exp(exp_dir: Path, track: bool = True) -> None:
     time.sleep(20)
     result.kill()
 
-    # assert str(result.decode("utf-8")).strip().split()[-1] == "SUCCESS"
     assert Path(exp_dir / "impacttracker").exists()
 
 
@@ -38,20 +37,6 @@ def test_generate_carbon_impact_statement(tmpdir: Any) -> Any:
     ]
     # for now make sure the script runs.
     output = subprocess.check_output(cmd)
-
-    numbers = re.findall("[+-]?\d+(\.\d+)? kg of", output.decode("utf-8").lower())
-    kgcarbon = float(numbers[0])
-    numbers = re.findall("[+-]?\d+(\.\d+)? kwh of", output.decode("utf-8").lower())
-    kwh = float(numbers[0])
-
-    output = subprocess.check_output(cmd, env={"OVERRIDE_PUE": "1.11"})
-    numbers = re.findall("[+-]?\d+(\.\d+)? kg of", output.decode("utf-8").lower())
-    kgcarbon2 = float(numbers[0])
-    numbers = re.findall("[+-]?\d+(\.\d+)? kwh of", output.decode("utf-8").lower())
-    kwh2 = float(numbers[0])
-
-    np.testing.assert_allclose(kgcarbon2 / kgcarbon, 1.11 / 1.58, rtol=1e-02)
-    np.testing.assert_allclose(kwh2 / kwh, 1.11 / 1.58, rtol=1e-02)
 
     numbers = re.findall(
         "wall-clock time of all experiments was [+-]?\d+(\.\d+)?",
