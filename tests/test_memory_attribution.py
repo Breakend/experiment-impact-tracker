@@ -1,7 +1,8 @@
-import psutil
 import tempfile
 import time
+
 import numpy as np
+import psutil
 
 from experiment_impact_tracker.compute_tracker import ImpactTracker
 from experiment_impact_tracker.data_interface import DataInterface
@@ -33,4 +34,4 @@ def test_ram_attribution():
     di = DataInterface(fname)
     di2 = DataInterface(fname2)
 
-    np.testing.assert_almost_equal(di.total_power*2, di2.total_power, decimal=4)
+    np.testing.assert_almost_equal(di.total_power * 2, di2.total_power, decimal=4)

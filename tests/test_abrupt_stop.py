@@ -1,9 +1,10 @@
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any
-import time
+
 import numpy as np
 
 
@@ -52,6 +53,9 @@ def test_generate_carbon_impact_statement(tmpdir: Any) -> Any:
     np.testing.assert_allclose(kgcarbon2 / kgcarbon, 1.11 / 1.58, rtol=1e-02)
     np.testing.assert_allclose(kwh2 / kwh, 1.11 / 1.58, rtol=1e-02)
 
-    numbers = re.findall("wall-clock time of all experiments was [+-]?\d+(\.\d+)?", output.decode("utf-8").lower())
+    numbers = re.findall(
+        "wall-clock time of all experiments was [+-]?\d+(\.\d+)?",
+        output.decode("utf-8").lower(),
+    )
     exp_time = float(numbers[0])
     np.testing.assert_allclose(exp_time, 0.006, atol=2e-03)
