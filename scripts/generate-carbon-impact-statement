@@ -56,7 +56,10 @@ def main(arguments):
     PUE = data_interface.PUE
     total_wall_clock_time = data_interface.exp_len_hours
 
-    ssc = pd.read_csv("https://raw.githubusercontent.com/country-level-scc/cscc-database-2018/master/cscc_db_v2.csv")
+    cscc_filepath = os.path.join(os.path.dirname(experiment_impact_tracker.__file__),
+                                'emissions/data/cscc_db_v2.csv')
+
+    ssc = pd.read_csv(cscc_filepath)
 
     # only use short-run model
     ssc = ssc[ssc["run"] == "bhm_sr"]
