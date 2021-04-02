@@ -22,8 +22,10 @@ from pandas.io.json import json_normalize
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
-from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
-                                                            INITIAL_INFO)
+# from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
+#                                                             INITIAL_INFO)
+#import wrapper for DATA_HEADERS, INITIAL_INFO
+from experiment_impact_tracker.data_info_and_router import get_initial_info, get_data_headers
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.emissions.common import \
     is_capable_realtime_carbon_intensity
@@ -175,6 +177,7 @@ def _get_compatible_data_headers(region=None):
     :return: which headers are compatible
     """
     compatible_headers = []
+    DATA_HEADERS = get_data_headers()
 
     for header in DATA_HEADERS:
         compat = True
@@ -203,7 +206,7 @@ def _validate_compatabilities(compatabilities, *args, **kwargs):
     return True
 
 
-def gather_initial_info(log_dir: str):
+def gather_initial_info(log_dir: str, REGION_COORDS=None): 
     """Log one time info
 
     For example, CPU/GPU info, version of this package, region, datetime for start of experiment,
@@ -217,6 +220,7 @@ def gather_initial_info(log_dir: str):
 
     data = {}
 
+    INITIAL_INFO = get_initial_info(REGION_COORDS) 
     # Gather all the one-time info specified by the appropriate router
     for info_ in INITIAL_INFO:
         key = info_["name"]
@@ -239,11 +243,11 @@ def gather_initial_info(log_dir: str):
 
 
 class ImpactTracker(object):
-    def __init__(self, logdir):
+    def __init__(self, logdir, REGION_COORDS=None):
         self.logdir = logdir
         self._setup_logging()
         self.logger.info("Gathering system info for reproducibility...")
-        self.initial_info = gather_initial_info(logdir)
+        self.initial_info = gather_initial_info(logdir, REGION_COORDS)
         self.logger.info("Done initial setup and information gathering...")
         self.launched = False
 

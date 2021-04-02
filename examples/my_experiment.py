@@ -1,6 +1,7 @@
 import sys
 import tempfile
-
+sys.path.append('../')
+sys.path.append('./')
 import torch
 
 from experiment_impact_tracker.compute_tracker import ImpactTracker
@@ -47,16 +48,19 @@ class Experiment:
         self.w2 -= self.learning_rate * grad_w2
 
 
-def my_experiment() -> None:
+def my_experiment(REGION_COORDS=None) -> None:
     tmp_dir = tempfile.mkdtemp()
     # Init tracker with log path
-    tracker = ImpactTracker(tmp_dir)
+    tracker = ImpactTracker(tmp_dir,REGION_COORDS)
     # Start tracker in a separate process
     tracker.launch_impact_monitor()
 
+    print(tracker.initial_info['region'])
+    print('')
+    print(tracker.initial_info['region_carbon_intensity_estimate'])
     exp = Experiment()
 
-    for t in range(100):
+    for t in range(10):
         if t % 10 == 9:
             print(f"Pass: {t}")
             # Optional. Adding this will ensure that your experiment stops if impact tracker throws an exception and exit.
@@ -67,4 +71,5 @@ def my_experiment() -> None:
 
 
 if __name__ == "__main__":
-    my_experiment()
+    REGION_COORDS =  (45.4972159,-73.6103642)  #MTL:(45.4972159,-73.6103642), NYC:(40.741895,-73.989308), Pune:(18.521428,73.8544541), Paris:(48.8566969,2.3514616)
+    my_experiment(REGION_COORDS)
