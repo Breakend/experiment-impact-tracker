@@ -22,15 +22,13 @@ from pandas.io.json import json_normalize
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
-# from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
-#                                                             INITIAL_INFO)
-#import wrapper for DATA_HEADERS, INITIAL_INFO
-from experiment_impact_tracker.data_info_and_router import get_initial_info, get_data_headers
+from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
+                                                            INITIAL_INFO)
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.emissions.common import \
     is_capable_realtime_carbon_intensity
 from experiment_impact_tracker.emissions.get_region_metrics import \
-    get_current_region_info_cached, get_region_info
+    get_current_region_info_cached
 from experiment_impact_tracker.gpu.nvidia import (get_gpu_info,
                                                   get_nvidia_gpu_power)
 from experiment_impact_tracker.utils import (get_timestamp, processify,
@@ -75,7 +73,7 @@ def read_latest_stats(log_dir):
     return None
 
 
-def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
+def _sample_and_log_power(log_dir, initial_info, logger=None):
     """
     Iterates over compatible metrics and logs the relevant information.
 
@@ -92,8 +90,7 @@ def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
         set(process_ids)
     )  # dedupe so that we don't double count by accident
 
-    #required_headers = _get_compatible_data_headers(get_current_region_info_cached()[0])
-    required_headers = _get_compatible_data_headers(get_region_info(REGION_COORDS)[0])
+    required_headers = _get_compatible_data_headers(get_current_region_info_cached()[0])
 
     header_information = {}
 
@@ -138,7 +135,7 @@ def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
 
 
 @processify
-def launch_power_monitor(queue, log_dir, REGION_COORDS, initial_info, logger=None):
+def launch_power_monitor(queue, log_dir, initial_info, logger=None):
     """
     Launches a separate process which monitors metrics
 
@@ -161,7 +158,7 @@ def launch_power_monitor(queue, log_dir, REGION_COORDS, initial_info, logger=Non
             pass
 
         try:
-            _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=logger)
+            _sample_and_log_power(log_dir, initial_info, logger=logger)
         except:
             ex_type, ex_value, tb = sys.exc_info()
             logger.error("Encountered exception within power monitor thread!")
@@ -178,7 +175,6 @@ def _get_compatible_data_headers(region=None):
     :return: which headers are compatible
     """
     compatible_headers = []
-    DATA_HEADERS = get_data_headers()
 
     for header in DATA_HEADERS:
         compat = True
@@ -207,7 +203,7 @@ def _validate_compatabilities(compatabilities, *args, **kwargs):
     return True
 
 
-def gather_initial_info(log_dir: str, REGION_COORDS=None): 
+def gather_initial_info(log_dir: str):
     """Log one time info
 
     For example, CPU/GPU info, version of this package, region, datetime for start of experiment,
@@ -220,10 +216,7 @@ def gather_initial_info(log_dir: str, REGION_COORDS=None):
     info_path = safe_file_path(os.path.join(log_dir, INFOPATH))
 
     data = {}
-    
-    print('Region coords: {}'.format(REGION_COORDS))
-    INITIAL_INFO = get_initial_info(REGION_COORDS) 
-    
+
     # Gather all the one-time info specified by the appropriate router
     for info_ in INITIAL_INFO:
         key = info_["name"]
@@ -246,12 +239,11 @@ def gather_initial_info(log_dir: str, REGION_COORDS=None):
 
 
 class ImpactTracker(object):
-    def __init__(self, logdir, REGION_COORDS=None):
+    def __init__(self, logdir):
         self.logdir = logdir
-        self.region_coords = REGION_COORDS
         self._setup_logging()
         self.logger.info("Gathering system info for reproducibility...")
-        self.initial_info = gather_initial_info(logdir, REGION_COORDS)
+        self.initial_info = gather_initial_info(logdir)
         self.logger.info("Done initial setup and information gathering...")
         self.launched = False
 
@@ -300,7 +292,7 @@ class ImpactTracker(object):
             # OS X multiprocessing starts processes with spawn instead of fork
             multiprocessing.set_start_method("fork")
             self.p, self.queue = launch_power_monitor(
-                self.logdir, self.region_coords, self.initial_info, self.logger
+                self.logdir, self.initial_info, self.logger
             )
 
             def _terminate_monitor_and_log_final_info(p):
