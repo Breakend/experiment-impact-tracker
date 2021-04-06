@@ -151,6 +151,7 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
             zombies.append(i)
 
     time.sleep(2.0)
+    
 
     for p in process_list:
         st21 = _timer()
@@ -355,6 +356,7 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
         # Modifying code https://github.com/giampaolo/psutil/blob/c10df5aa04e1ced58d19501fa42f08c1b909b83d/psutil/__init__.py#L1102-L1107
         # We want relative percentage of CPU used so we ignore the multiplier by number of CPUs, we want a number from 0-1.0 to give
         # power credits accordingly
+
         st11 = _timer()
         # units in terms of cpu-time, so we need the cpu in the last time period that are for the process only
         system_wide_pt1 = psutil.cpu_times()
@@ -363,11 +365,13 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
             pt1 = p.cpu_times()
             infos1.append((st11, st12, system_wide_pt1, pt1))
         except (psutil.NoSuchProcess, psutil.ZombieProcess):
+            infos1.append(None) # Maintain the length equal to process_list to avoid index mismatch during power sampling.
             zombies.append(i)
 
     time.sleep(2.0)
 
-    for p in process_list:
+    # Added enumerater "i" to keep track of zombie processes.
+    for i, p in enumerate(process_list):
         st21 = _timer()
         try:
             pt2 = p.cpu_times()
@@ -375,8 +379,9 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
             system_wide_pt2 = psutil.cpu_times()
             infos2.append((st21, st22, system_wide_pt2, pt2))
         except (psutil.NoSuchProcess, psutil.ZombieProcess):
+            infos2.append(None) # Maintain the length equal to process_list to avoid index mismatch during power sampling.
             zombies.append(i)
-
+    
     # now is a good time to get the power samples that we got the process times for
     s2 = rapl.RAPLMonitor.sample()
     diff = s2 - s1
@@ -427,7 +432,8 @@ def get_rapl_power(pid_list, logger=None, **kwargs):
     if total_gpu_power != 0:
         raise ValueError("Don't support credit assignment to Intel RAPL GPU yet.")
 
-    for i, p in enumerate(process_list):
+    for i, p in enumerate(process_list): 
+        # Ignore calculations for the zombie processes. They are denoted as None in the infos lists.
         if i in zombies:
             continue
 
