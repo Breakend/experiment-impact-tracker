@@ -46,6 +46,7 @@ def get_current_region_info(*args, **kwargs):
 def get_region_info(region_coords=None):
     ''' Wrapper func to grab zone info based on either specific lat-long coordinates or default current region
     '''
+    print('Emissions region coords: {}'.format(region_coords))
     if region_coords == None:
         return get_current_region_info_cached()
     else:
