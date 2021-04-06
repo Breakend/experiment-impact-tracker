@@ -148,12 +148,13 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
             pt1 = p.cpu_times()
             infos1.append((st11, st12, system_wide_pt1, pt1))
         except (psutil.NoSuchProcess, psutil.ZombieProcess):
+            infos1.append(None) # Maintain the length equal to process_list to avoid index mismatch during power sampling.
             zombies.append(i)
 
     time.sleep(2.0)
-    
 
-    for p in process_list:
+    # for p in process_list:
+    for i, p in enumerate(process_list):
         st21 = _timer()
         try:
             pt2 = p.cpu_times()
@@ -161,7 +162,9 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
             system_wide_pt2 = psutil.cpu_times()
             infos2.append((st21, st22, system_wide_pt2, pt2))
         except (psutil.NoSuchProcess, psutil.ZombieProcess):
+            infos2.append(None) # Maintain the length equal to process_list to avoid index mismatch during power sampling.
             zombies.append(i)
+
     # now is a good time to get the power samples that we got the process times for
     powercap_results = powercap_interface.join()
     total_intel_power = powercap_results.get("Processor Power_0(Watt)", 0)
@@ -173,6 +176,7 @@ def get_powercap_power(pid_list, logger=None, **kwargs):
         raise ValueError("Don't support credit assignment to Intel RAPL GPU yet.")
 
     for i, p in enumerate(process_list):
+        # Ignore calculations for the zombie processes. They are denoted as None in the infos lists.
         if i in zombies:
             continue
         st1, st12, system_wide_pt1, pt1 = infos1[i]
