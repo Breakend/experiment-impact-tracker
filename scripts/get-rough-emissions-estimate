@@ -32,8 +32,8 @@ def cmdline_args():
     p.add_argument("--location", type=str, help="If no IP address provided, please provide an address: e.g., Montreal, QC, Canada")    
     p.add_argument("--gpu", type=str, help="The GPU name, from [{}]".format(", ".join(gpu_data["name"])))
     p.add_argument("--cpu", type=str, help="The CPU name, from [{}]".format(", ".join(cpu_data["Model"])))
-    p.add_argument("--gpu-utilization-factor", type=float, help="What percentage of the GPU do you think your application used.")
-    p.add_argument("--cpu-utilization-factor", type=float, help="What percentage of the GPU do you think your application used.")
+    p.add_argument("--gpu-utilization-factor", type=float, help="What fraction of the GPU do you think your application used (e.g., 1.0 would be 100% utilization on average throughout the life of the experiment).")
+    p.add_argument("--cpu-utilization-factor", type=float, help="What fraction of the CPU do you think your application used (e.g., .3 would be 30% cpu utlization on average throughout the life of the experiment)")
     return(p.parse_args())
 
 
