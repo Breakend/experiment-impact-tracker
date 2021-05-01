@@ -75,7 +75,7 @@ def read_latest_stats(log_dir):
     return None
 
 
-def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
+def _sample_and_log_power(log_dir, region_coords, initial_info, logger=None):
     """
     Iterates over compatible metrics and logs the relevant information.
 
@@ -93,7 +93,7 @@ def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
     )  # dedupe so that we don't double count by accident
 
     #required_headers = _get_compatible_data_headers(get_current_region_info_cached()[0])
-    required_headers = _get_compatible_data_headers(get_region_info(REGION_COORDS)[0])
+    required_headers = _get_compatible_data_headers(get_region_info(region_coords)[0])
 
     header_information = {}
 
@@ -138,7 +138,7 @@ def _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=None):
 
 
 @processify
-def launch_power_monitor(queue, log_dir, REGION_COORDS, initial_info, logger=None):
+def launch_power_monitor(queue, log_dir, region_coords, initial_info, logger=None):
     """
     Launches a separate process which monitors metrics
 
@@ -161,7 +161,7 @@ def launch_power_monitor(queue, log_dir, REGION_COORDS, initial_info, logger=Non
             pass
 
         try:
-            _sample_and_log_power(log_dir, REGION_COORDS, initial_info, logger=logger)
+            _sample_and_log_power(log_dir, region_coords, initial_info, logger=logger)
         except:
             ex_type, ex_value, tb = sys.exc_info()
             logger.error("Encountered exception within power monitor thread!")
@@ -207,7 +207,7 @@ def _validate_compatabilities(compatabilities, *args, **kwargs):
     return True
 
 
-def gather_initial_info(log_dir: str, REGION_COORDS=None): 
+def gather_initial_info(log_dir: str, region_coords=None): 
     """Log one time info
 
     For example, CPU/GPU info, version of this package, region, datetime for start of experiment,
@@ -221,8 +221,8 @@ def gather_initial_info(log_dir: str, REGION_COORDS=None):
 
     data = {}
     
-    print('Region coords: {}'.format(REGION_COORDS))
-    INITIAL_INFO = get_initial_info(REGION_COORDS) 
+    print('Region coords: {}'.format(region_coords))
+    INITIAL_INFO = get_initial_info(region_coords) 
     
     # Gather all the one-time info specified by the appropriate router
     for info_ in INITIAL_INFO:
