@@ -22,10 +22,10 @@ from pandas.io.json import json_normalize
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
 from experiment_impact_tracker.cpu.intel import get_intel_power, get_rapl_power
-# from experiment_impact_tracker.data_info_and_router import (DATA_HEADERS,
-#                                                             INITIAL_INFO)
+
 #import wrapper for DATA_HEADERS, INITIAL_INFO
 from experiment_impact_tracker.data_info_and_router import get_initial_info, get_data_headers
+
 from experiment_impact_tracker.data_utils import *
 from experiment_impact_tracker.emissions.common import \
     is_capable_realtime_carbon_intensity
@@ -246,12 +246,12 @@ def gather_initial_info(log_dir: str, REGION_COORDS=None):
 
 
 class ImpactTracker(object):
-    def __init__(self, logdir, REGION_COORDS=None):
+    def __init__(self, logdir, region_coords=None):
         self.logdir = logdir
-        self.region_coords = REGION_COORDS
+        self.region_coords = region_coords
         self._setup_logging()
         self.logger.info("Gathering system info for reproducibility...")
-        self.initial_info = gather_initial_info(logdir, REGION_COORDS)
+        self.initial_info = gather_initial_info(logdir, region_coords)
         self.logger.info("Done initial setup and information gathering...")
         self.launched = False
 

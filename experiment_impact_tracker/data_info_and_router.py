@@ -26,7 +26,7 @@ get_time_now = lambda *args, **kwargs: datetime.now()
 all_compatible = lambda *args, **kwargs: True
 
 # Replaced INITIAL_INFO AND DATA_HEADERS with a function wrapper
-def get_initial_info(REGION_COORDS=None): 
+def get_initial_info(region_coords=None): 
 
     INITIAL_INFO = [
         {
@@ -63,19 +63,17 @@ def get_initial_info(REGION_COORDS=None):
             "name": "region",
             "description": "The region we determine this experiment to be run in.",
             "compatability": [all_compatible],
-            # "routing": {"function": lambda: get_current_region_info_cached()[0]},
-
+            
             #A wrapper for selecting current vs specific region_info
-            "routing": {"function": lambda: get_region_info(REGION_COORDS)[0]}, 
+            "routing": {"function": lambda: get_region_info(region_coords)[0]}, 
         },
         {
             "name": "region_carbon_intensity_estimate",
             "description": "The average carbon intensity estimated for the region this experiment is in.",
             "compatability": [all_compatible],
-            # "routing": {"function": lambda: get_current_region_info_cached()[1]},
-
+            
             #A wrapper for selecting current vs specific region_info
-            "routing": {"function": lambda: get_region_info(REGION_COORDS)[1]},
+            "routing": {"function": lambda: get_region_info(region_coords)[1]},
         },
     ]
 

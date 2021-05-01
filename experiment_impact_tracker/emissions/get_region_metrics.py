@@ -42,11 +42,10 @@ def get_current_location():
 def get_current_region_info(*args, **kwargs):
     return get_zone_information_by_coords(get_current_location())
 
-### Added by nikhil153 to avoid error in get_current_region_info_cached on CC
+### Added by nikhil153 to avoid error in get_current_region_info_cached on offline clusters
 def get_region_info(region_coords=None):
     ''' Wrapper func to grab zone info based on either specific lat-long coordinates or default current region
     '''
-    print('Emissions region coords: {}'.format(region_coords))
     if region_coords == None:
         return get_current_region_info_cached()
     else:
