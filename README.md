@@ -221,6 +221,13 @@ $ brew cask install intel-power-gadget
 $ which "/Applications/Intel Power Gadget/PowerLog"
 ```
 
+or for newer versions of OS X
+
+```bash
+$ brew install intel-power-gadget
+$ which "/Applications/Intel Power Gadget/PowerLog"
+```
+
 You can also see here: https://software.intel.com/content/www/us/en/develop/articles/intel-power-gadget.html
 
 This will install a tool called PowerLog that we rely on to get power measurements on Mac OS X systems.
