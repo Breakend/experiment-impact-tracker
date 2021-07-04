@@ -290,7 +290,7 @@ class ImpactTracker(object):
         try:
             # the defaults for multiprocessing changed in python 3.8.
             # OS X multiprocessing starts processes with spawn instead of fork
-            multiprocessing.set_start_method("fork")
+            multiprocessing.set_start_method("spawn")
             self.p, self.queue = launch_power_monitor(
                 self.logdir, self.initial_info, self.logger
             )
