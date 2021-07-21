@@ -1465,8 +1465,12 @@
       "fossilFuelRatio": 0.39086705879858774,
       "renewableRatio": 0.29010121100799435
     },
+    "US-NV" : {
+      "_source" : "https://www.eia.gov/environment/emissions/state/ (as of 2018)",
+      "carbonIntensity" : 177.431365
+    },
     "US-OR" : {
-        "_source" : "https://www.eia.gov/electricity/state/oregon/",
+        "_source" : "https://www.eia.gov/electricity/state/oregon/ (as of 2018)",
         "carbonIntensity" : 127.006
     },
     "US-PJM": {
