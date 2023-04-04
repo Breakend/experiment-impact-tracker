@@ -25,7 +25,7 @@ from experiment_impact_tracker.emissions.get_region_metrics import \
     get_zone_name_by_id
 from experiment_impact_tracker.utils import gather_additional_info
 
-pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_colwidth', None)
 
 
 def _gather_executive_summary(aggregated_info, executive_summary_variables, experiment_set_names, all_points=False):
