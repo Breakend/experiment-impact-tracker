@@ -35,7 +35,7 @@ from experiment_impact_tracker.stats import (get_average_treatment_effect,
                                              run_test)
 from experiment_impact_tracker.utils import gather_additional_info
 
-pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_colwidth', None)
 
 
 
