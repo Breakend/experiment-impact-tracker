@@ -17,7 +17,10 @@ import numpy as np
 import pandas as pd
 import psutil
 import ujson as json
-from pandas.io.json import json_normalize
+try:
+    from pandas.io.json import json_normalize
+except ImportError:
+    from pandas import json_normalize
 
 from experiment_impact_tracker.cpu import rapl
 from experiment_impact_tracker.cpu.common import get_my_cpu_info
