@@ -41,7 +41,7 @@ class RoughEmissionsEstimator(object):
         carbonIntensity = zone_info['carbonIntensity']
         carbonIntensity_source = zone_info['_source']
 
-        gpu_kWh = kWh = float(self.gpu_vals['tdp']) * self.gpu_utilization_factor * (self.experiment_length_seconds /
+        gpu_kWh = kWh = float(self.gpu_vals['tdp'].iloc[0]) * self.gpu_utilization_factor * (self.experiment_length_seconds /
                                                                                  3600.)\
                  / \
               1000.
@@ -81,9 +81,9 @@ class RoughEmissionsEstimator(object):
         lower = ssc["16.7%"]
         upper = ssc["83.3%"]
 
-        median_carbon_cost = (kg_carbon / 1000.) * float(median)
-        upper_carbon_cost = (kg_carbon / 1000.) * float(upper)
-        lower_carbon_cost = (kg_carbon / 1000.) * float(lower)
+        median_carbon_cost = (kg_carbon / 1000.) * float(median.iloc[0])
+        upper_carbon_cost = (kg_carbon / 1000.) * float(upper.iloc[0])
+        lower_carbon_cost = (kg_carbon / 1000.) * float(lower.iloc[0])
 
         bibtex_nature = """
         @article{ricke2018country,
