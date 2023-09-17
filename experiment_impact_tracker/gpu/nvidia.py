@@ -189,7 +189,7 @@ def get_nvidia_gpu_power(pid_list, logger=None, **kwargs):
         gpu_data["utilization"] = {"gpu_util": gpu_util, "memory_util": memory_util}
 
         # get power
-        power_readings = gpu.findall("power_readings")[0]
+        power_readings = gpu.findall("power_readings")[0] if gpu.findall("power_readings") else gpu.findall("gpu_power_readings")[0]
         power_draw = power_readings.findall("power_draw")[0].text
 
         gpu_data["power_readings"] = {"power_draw": power_draw}
