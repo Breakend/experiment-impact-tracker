@@ -59,9 +59,9 @@ def get_gpu_info(*args, **kwargs):
     driver_version = xml.findall("driver_version")[0].text
     cuda_version = xml.findall("cuda_version")[0].text
 
-    for gpu_id, gpu in enumerate(xml.getiterator("gpu")):
+    for gpu_id, gpu in enumerate(xml.iter("gpu")):
         gpu_data = {}
-        name = [x for x in gpu.getiterator("product_name")][0].text
+        name = [x for x in gpu.iter("product_name")][0].text
         memory_usage = gpu.findall("fb_memory_usage")[0]
         total_memory = memory_usage.findall("total")[0].text
 
